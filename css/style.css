@@ -223,3 +223,65 @@ border:1px solid #00d084;
 color:#00d084;
 
 }
+
+.products{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+
+gap:30px;
+
+padding:80px 60px;
+
+max-width:1300px;
+
+margin:auto;
+
+}
+
+.card{
+
+background:#111827;
+
+padding:35px;
+
+border-radius:20px;
+
+border:1px solid #1f2937;
+
+transition:.3s;
+
+cursor:pointer;
+
+}
+
+.card:hover{
+
+transform:translateY(-8px);
+
+border:1px solid #00d084;
+
+box-shadow:0 0 25px rgba(0,208,132,.25);
+
+}
+
+.card h2{
+
+color:#00d084;
+
+margin-bottom:18px;
+
+font-size:28px;
+
+}
+
+.card p{
+
+color:#cbd5e1;
+
+font-size:18px;
+
+line-height:30px;
+
+}
