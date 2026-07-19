@@ -353,3 +353,40 @@ color:#cbd5e1;
 padding:80px 20px;
 
 }
+
+
+.dashboard-grid{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+
+gap:25px;
+
+padding:60px;
+
+}
+
+.card{
+
+background:#111827;
+
+padding:25px;
+
+border-radius:12px;
+
+border:1px solid #1f2937;
+
+transition:0.3s;
+
+}
+
+.card:hover{
+
+transform:translateY(-8px);
+
+border-color:#00d084;
+
+box-shadow:0 0 20px rgba(0,208,132,0.3);
+
+}
