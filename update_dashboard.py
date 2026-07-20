@@ -5,6 +5,7 @@ SOURCE = os.path.expanduser("~/signals")
 DESTINATION = os.path.expanduser("~/godo-ai/assets/data")
 
 FILES = [
+    "engine_status.json",
     "signal_statistics.json",
     "trade_statistics.json",
     "active_signals.json",

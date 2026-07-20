@@ -58,6 +58,11 @@ function loadLatestSignals() {
 
         const box = document.getElementById("latestSignals");
 
+        if (!data.signals || Object.keys(data.signals).length === 0) {
+            box.innerHTML = "Waiting for signals...";
+            return;
+        }
+
         let html = "";
 
         for (const symbol in data.signals) {
@@ -80,15 +85,11 @@ function loadLatestSignals() {
             `;
         }
 
-        if(html===""){
-            html="Waiting for signals...";
-        }
-
         box.innerHTML = html;
 
-    });
+    })
 
-.catch(error => {
+    .catch(error => {
         console.log(error);
     });
 
@@ -113,12 +114,36 @@ document.getElementById("livePrices").innerHTML=`
 <b>XAUUSD</b> : ${Number(prices.XAUUSD).toFixed(2)}<br>
 <b>NDX</b> : ${Number(prices.NDX).toFixed(2)}
 `;
+document.getElementById("lastRefresh").innerText =
+"Last Refresh: " + new Date().toLocaleTimeString();
 
-});
+})
 
 .catch(error => console.log(error));
 
 }
+
+// ==========================
+// Engine Status
+// ==========================
+
+function loadEngineStatus(){
+
+fetch("assets/data/engine_status.json")
+.then(response => response.json())
+.then(data => {
+
+document.getElementById("engineStatus").innerText =
+data.status;
+
+document.getElementById("scannerStatus").innerText =
+data.scanner;
+
+})
+.catch(error => console.log(error));
+
+}
+
 
 // ==========================
 // Next Scan Countdown
@@ -177,10 +202,14 @@ loadLatestSignals();
 
 loadPrices();
 
+loadEngineStatus();
+
 setInterval(()=>{
 
 loadLatestSignals();
 
 loadPrices();
+
+loadEngineStatus();
 
 },5000);
