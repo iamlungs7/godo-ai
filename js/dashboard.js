@@ -111,3 +111,52 @@ fetch("assets/data/latest_prices.json")
 
 })
 .catch(error => console.log(error));
+
+// ==========================
+// Next Scan Countdown
+// ==========================
+
+let seconds = 300;
+
+setInterval(() => {
+
+    const min = Math.floor(seconds / 60);
+    const sec = seconds % 60;
+
+    document.getElementById("nextScan").innerText =
+    `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+
+    if (seconds > 0) {
+        seconds--;
+    } else {
+        seconds = 300;
+    }
+
+}, 1000);
+
+// ==========================
+// Scanner Animation
+// ==========================
+
+const markets = [
+    "BTCUSD",
+    "ETHUSD",
+    "BNBUSD",
+    "XAUUSD",
+    "NDX"
+];
+
+let i = 0;
+
+setInterval(() => {
+
+    document.getElementById("scannerStatus").innerText =
+    "Scanning " + markets[i] + "...";
+
+    i++;
+
+    if (i >= markets.length) {
+        i = 0;
+    }
+
+}, 1000);
