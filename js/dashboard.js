@@ -64,7 +64,23 @@ fetch("assets/data/latest_signals.json")
     let html = "";
 
     for (const symbol in data.signals) {
-        html += `<pre>${data.signals[symbol]}</pre><hr>`;
+
+        const lines = data.signals[symbol]
+            .split("\n")
+            .map(line => line.trim())
+            .filter(line => line !== "");
+
+        const direction = lines[3];
+        const time = lines[lines.length - 1];
+
+        html += `
+            <div class="signal-card">
+                <strong>${symbol}</strong><br>
+                ${direction}<br>
+                <small>${time}</small>
+            </div>
+            <hr>
+        `;
     }
 
     box.innerHTML = html;

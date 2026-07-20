@@ -465,3 +465,17 @@ color:#cbd5e1;
 .info-box p{
     color:#ffffff;
 }
+
+.signal-card{
+    padding:10px;
+    text-align:center;
+}
+
+.signal-card strong{
+    color:#00ff99;
+    font-size:18px;
+}
+
+.signal-card small{
+    color:#bbbbbb;
+}
