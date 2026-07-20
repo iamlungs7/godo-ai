@@ -50,58 +50,63 @@ console.log(error);
 //Latest Signals JSON
 //============================
 
-fetch("assets/data/latest_signals.json")
-.then(response => response.json())
-.then(data => {
+function loadLatestSignals() {
 
-    const box = document.getElementById("latestSignals");
+    fetch("assets/data/latest_signals.json")
+    .then(response => response.json())
+    .then(data => {
 
-    if (!data.signals || Object.keys(data.signals).length === 0) {
-        box.innerHTML = "No signals available";
-        return;
-    }
+        const box = document.getElementById("latestSignals");
 
-    let html = "";
+        let html = "";
 
-    for (const symbol in data.signals) {
+        for (const symbol in data.signals) {
 
-        const lines = data.signals[symbol]
-            .split("\n")
-            .map(line => line.trim())
-            .filter(line => line !== "");
+            const signal = data.signals[symbol];
 
-        const direction = lines[3];
-        const time = lines[lines.length - 1];
+            const lines = signal.split("\n").filter(Boolean);
 
-        html += `
-            <div class="signal-card">
-                <strong>${symbol}</strong><br>
-                ${direction}<br>
-                <small>${time}</small>
-            </div>
-            <hr>
-        `;
-    }
+            const direction = lines[3];
 
-    box.innerHTML = html;
+            const time = lines[lines.length - 1];
 
-})
+            html += `
+                <div class="signal-card">
+                    <strong>${symbol}</strong><br>
+                    ${direction}<br>
+                    <small>${time}</small>
+                </div>
+                <hr>
+            `;
+        }
+
+        if(html===""){
+            html="Waiting for signals...";
+        }
+
+        box.innerHTML = html;
+
+    });
+
 .catch(error => {
-    console.log(error);
-});
+        console.log(error);
+    });
 
+}
 
 // ==========================
 // Live Prices
 // ==========================
 
+function loadPrices(){
+
 fetch("assets/data/latest_prices.json")
-.then(response => response.json())
-.then(data => {
+.then(response=>response.json())
+.then(data=>{
 
-    const prices = data.prices;
+const prices=data.prices;
 
-    document.getElementById("livePrices").innerHTML = `
+document.getElementById("livePrices").innerHTML=`
 <b>BTCUSD</b> : ${Number(prices.BTCUSD).toFixed(2)}<br>
 <b>ETHUSD</b> : ${Number(prices.ETHUSD).toFixed(2)}<br>
 <b>BNBUSD</b> : ${Number(prices.BNBUSD).toFixed(2)}<br>
@@ -109,8 +114,11 @@ fetch("assets/data/latest_prices.json")
 <b>NDX</b> : ${Number(prices.NDX).toFixed(2)}
 `;
 
-})
+});
+
 .catch(error => console.log(error));
+
+}
 
 // ==========================
 // Next Scan Countdown
@@ -160,3 +168,19 @@ setInterval(() => {
     }
 
 }, 1000);
+
+// ==========================
+// Auto Refresh Dashboard
+// ==========================
+
+loadLatestSignals();
+
+loadPrices();
+
+setInterval(()=>{
+
+loadLatestSignals();
+
+loadPrices();
+
+},5000);
