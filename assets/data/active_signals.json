@@ -1,18 +1,4 @@
 {
-    "16": {
-        "id": 16,
-        "symbol": "BTCUSD",
-        "side": "BUY",
-        "entry_low": 64696.63457142857,
-        "entry_high": 64830.705428571426,
-        "sl": 63100.0,
-        "tp": 70022.8217142857,
-        "time": "2026-07-20 17:47:02",
-        "status": "ACTIVE",
-        "protected": false,
-        "breakeven_sent": false,
-        "counted": false
-    },
     "18": {
         "id": 18,
         "symbol": "BNBUSD",
@@ -22,6 +8,20 @@
         "sl": 562.97,
         "tp": 598.5454285714284,
         "time": "2026-07-20 17:47:05",
+        "status": "ACTIVE",
+        "protected": false,
+        "breakeven_sent": false,
+        "counted": false
+    },
+    "30": {
+        "id": 30,
+        "symbol": "ETHUSD",
+        "side": "SELL",
+        "entry_low": 1925.6395714285713,
+        "entry_high": 1929.4204285714286,
+        "sl": 1953.0,
+        "tp": 1843.5582857142854,
+        "time": "2026-07-21 19:49:13",
         "status": "ACTIVE",
         "protected": false,
         "breakeven_sent": false,
