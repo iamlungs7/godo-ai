@@ -26,5 +26,19 @@
         "protected": false,
         "breakeven_sent": false,
         "counted": false
+    },
+    "37": {
+        "id": 37,
+        "symbol": "XAUUSD",
+        "side": "BUY",
+        "entry_low": 4083.5305017142855,
+        "entry_high": 4087.0716782857144,
+        "sl": 4075.31176,
+        "tp": 4122.351433142858,
+        "time": "2026-07-22 05:22:18",
+        "status": "ACTIVE",
+        "protected": false,
+        "breakeven_sent": false,
+        "counted": false
     }
 }
