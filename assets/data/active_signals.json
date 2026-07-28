@@ -1,1 +1,30 @@
-{}
+{
+    "39": {
+        "id": 39,
+        "symbol": "XAUUSD",
+        "side": "SELL",
+        "entry_low": 4034.7649189999997,
+        "entry_high": 4037.316561,
+        "sl": 4089.80554,
+        "tp": 3869.6430559999994,
+        "time": "2026-07-28 11:38:20",
+        "status": "ACTIVE",
+        "protected": false,
+        "breakeven_sent": false,
+        "counted": false
+    },
+    "42": {
+        "id": 42,
+        "symbol": "BTCUSD",
+        "side": "BUY",
+        "entry_low": 63528.371,
+        "entry_high": 63647.629,
+        "sl": 62742.47,
+        "tp": 66363.106,
+        "time": "2026-07-28 18:20:11",
+        "status": "ACTIVE",
+        "protected": false,
+        "breakeven_sent": false,
+        "counted": false
+    }
+}
