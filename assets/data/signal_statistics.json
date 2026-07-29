@@ -1,9 +1,9 @@
 {
     "wins": 8,
-    "losses": 4,
+    "losses": 5,
     "breakeven": 28,
-    "overall": 20.0,
-    "total_signals": 42,
+    "overall": 19.51,
+    "total_signals": 45,
     "today": {
         "2026-07-13": {
             "wins": 0,
@@ -54,6 +54,11 @@
             "wins": 3,
             "losses": 1,
             "breakeven": 23
+        },
+        "2026-07-29": {
+            "wins": 0,
+            "losses": 1,
+            "breakeven": 0
         }
     },
     "weekly": {
@@ -69,14 +74,14 @@
         },
         "2026-W30": {
             "wins": 8,
-            "losses": 4,
+            "losses": 5,
             "breakeven": 28
         }
     },
     "monthly": {
         "2026-07": {
             "wins": 8,
-            "losses": 4,
+            "losses": 5,
             "breakeven": 28
         }
     },
@@ -98,7 +103,7 @@
         },
         "BNBUSD": {
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "breakeven": 4
         }
     }

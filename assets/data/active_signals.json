@@ -26,5 +26,33 @@
         "protected": false,
         "breakeven_sent": false,
         "counted": false
+    },
+    "44": {
+        "id": 44,
+        "symbol": "ETHUSD",
+        "side": "SELL",
+        "entry_low": 1899.1874285714287,
+        "entry_high": 1903.1525714285715,
+        "sl": 1928.51,
+        "tp": 1811.2197142857146,
+        "time": "2026-07-29 05:43:20",
+        "status": "ACTIVE",
+        "protected": false,
+        "breakeven_sent": false,
+        "counted": false
+    },
+    "45": {
+        "id": 45,
+        "symbol": "BNBUSD",
+        "side": "SELL",
+        "entry_low": 567.9771428571428,
+        "entry_high": 568.6028571428571,
+        "sl": 573.5,
+        "tp": 551.4085714285711,
+        "time": "2026-07-29 06:04:07",
+        "status": "ACTIVE",
+        "protected": false,
+        "breakeven_sent": false,
+        "counted": false
     }
 }
