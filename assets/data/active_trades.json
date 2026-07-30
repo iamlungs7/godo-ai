@@ -1,8 +1,8 @@
 {
-    "44": {
-        "signal_id": 44,
-        "symbol": "ETHUSD",
-        "side": "SELL",
+    "51": {
+        "signal_id": 51,
+        "symbol": "BNBUSD",
+        "side": "BUY",
         "state": "SIGNAL_EXPIRED",
         "entry_reached": false,
         "entry_confirmed": false,
@@ -18,32 +18,11 @@
         "sl": null,
         "tp": null,
         "risk": null,
-        "created": "2026-07-30 09:31:42"
+        "created": "2026-07-30 18:02:14"
     },
-    "50": {
-        "signal_id": 50,
+    "52": {
+        "signal_id": 52,
         "symbol": "BTCUSD",
-        "side": "SELL",
-        "state": "WAIT_RSI",
-        "entry_reached": false,
-        "entry_confirmed": false,
-        "entry_rejected": true,
-        "order_sent": false,
-        "order_filled": false,
-        "protected": false,
-        "trade_closed": false,
-        "result": "",
-        "reason": "SELL RSI confirmation failed",
-        "entry_low": null,
-        "entry_high": null,
-        "sl": null,
-        "tp": null,
-        "risk": null,
-        "created": "2026-07-30 09:31:42"
-    },
-    "51": {
-        "signal_id": 51,
-        "symbol": "BNBUSD",
         "side": "BUY",
         "state": "WAIT_RSI",
         "entry_reached": false,
@@ -60,6 +39,48 @@
         "sl": null,
         "tp": null,
         "risk": null,
-        "created": "2026-07-30 09:31:45"
+        "created": "2026-07-30 18:02:14"
+    },
+    "53": {
+        "signal_id": 53,
+        "symbol": "ETHUSD",
+        "side": "BUY",
+        "state": "WAIT_RSI",
+        "entry_reached": false,
+        "entry_confirmed": false,
+        "entry_rejected": false,
+        "order_sent": false,
+        "order_filled": false,
+        "protected": false,
+        "trade_closed": false,
+        "result": "",
+        "reason": "Waiting for RSI confirmation",
+        "entry_low": null,
+        "entry_high": null,
+        "sl": null,
+        "tp": null,
+        "risk": null,
+        "created": "2026-07-30 18:02:27"
+    },
+    "54": {
+        "signal_id": 54,
+        "symbol": "XAUUSD",
+        "side": "BUY",
+        "state": "WAIT_ENTRY",
+        "entry_reached": false,
+        "entry_confirmed": false,
+        "entry_rejected": false,
+        "order_sent": false,
+        "order_filled": false,
+        "protected": false,
+        "trade_closed": false,
+        "result": "",
+        "reason": "",
+        "entry_low": null,
+        "entry_high": null,
+        "sl": null,
+        "tp": null,
+        "risk": null,
+        "created": "2026-07-30 18:02:38"
     }
 }
