@@ -1,9 +1,9 @@
 {
     "wins": 8,
-    "losses": 5,
-    "breakeven": 28,
-    "overall": 19.51,
-    "total_signals": 45,
+    "losses": 8,
+    "breakeven": 32,
+    "overall": 16.67,
+    "total_signals": 51,
     "today": {
         "2026-07-13": {
             "wins": 0,
@@ -57,8 +57,13 @@
         },
         "2026-07-29": {
             "wins": 0,
+            "losses": 3,
+            "breakeven": 3
+        },
+        "2026-07-30": {
+            "wins": 0,
             "losses": 1,
-            "breakeven": 0
+            "breakeven": 1
         }
     },
     "weekly": {
@@ -74,27 +79,27 @@
         },
         "2026-W30": {
             "wins": 8,
-            "losses": 5,
-            "breakeven": 28
+            "losses": 8,
+            "breakeven": 32
         }
     },
     "monthly": {
         "2026-07": {
             "wins": 8,
-            "losses": 5,
-            "breakeven": 28
+            "losses": 8,
+            "breakeven": 32
         }
     },
     "assets": {
         "XAUUSD": {
             "wins": 2,
-            "losses": 0,
-            "breakeven": 7
+            "losses": 1,
+            "breakeven": 10
         },
         "BTCUSD": {
             "wins": 6,
-            "losses": 2,
-            "breakeven": 6
+            "losses": 3,
+            "breakeven": 7
         },
         "ETHUSD": {
             "wins": 0,
@@ -103,7 +108,7 @@
         },
         "BNBUSD": {
             "wins": 0,
-            "losses": 2,
+            "losses": 3,
             "breakeven": 4
         }
     }
