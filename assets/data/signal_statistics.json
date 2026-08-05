@@ -1,1 +1,17 @@
-{}
+{
+    "wins": 0,
+    "losses": 0,
+    "breakeven": 0,
+    "overall": 0,
+    "total_signals": 1,
+    "today": {},
+    "weekly": {},
+    "monthly": {},
+    "assets": {
+        "BTCUSD": {
+            "wins": 0,
+            "losses": 0,
+            "breakeven": 0
+        }
+    }
+}

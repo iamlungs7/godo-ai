@@ -1,1 +1,16 @@
-{}
+{
+    "9": {
+        "id": 9,
+        "symbol": "BTCUSD",
+        "side": "BUY",
+        "entry_low": 64719.55128571428,
+        "entry_high": 64802.428714285714,
+        "sl": 63880.0,
+        "tp": 66647.28614285713,
+        "time": "2026-08-05 22:51:12",
+        "status": "ACTIVE",
+        "protected": false,
+        "breakeven_sent": false,
+        "counted": false
+    }
+}

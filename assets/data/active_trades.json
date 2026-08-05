@@ -1,1 +1,23 @@
-{}
+{
+    "9": {
+        "signal_id": 9,
+        "symbol": "BTCUSD",
+        "side": "BUY",
+        "state": "WAIT_RSI",
+        "entry_reached": false,
+        "entry_confirmed": false,
+        "entry_rejected": false,
+        "order_sent": false,
+        "order_filled": false,
+        "protected": false,
+        "trade_closed": false,
+        "result": "",
+        "reason": "Waiting for RSI confirmation",
+        "entry_low": null,
+        "entry_high": null,
+        "sl": null,
+        "tp": null,
+        "risk": null,
+        "created": "2026-08-05 22:55:20"
+    }
+}

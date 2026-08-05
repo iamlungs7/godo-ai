@@ -1,7 +1,6 @@
 {
-    "updated": "2026-08-05 18:26:45",
+    "updated": "2026-08-05 22:51:12",
     "signals": {
-        "BTCUSD": "\n            GODO AI SIGNAL        #7\n\nBTCUSD\n\nDirection\nBUY\n\nEntry Zone\n64529.44 - 64633.42\n\nStop Loss\n63880.0\n\nTake Profit\n66893.67\n\nRisk Reward\n1 : 3.0\n\nConfidence\n65%\n\nATR\n0.4%\n\nTime\n2026-08-05 18:26:43\n",
-        "ETHUSD": "\n            GODO AI SIGNAL        #8\n\nETHUSD\n\nDirection\nBUY\n\nEntry Zone\n1880.76 - 1884.92\n\nStop Loss\n1855.5\n\nTake Profit\n1973.17\n\nRisk Reward\n1 : 3.0\n\nConfidence\n80%\n\nATR\n0.55%\n\nTime\n2026-08-05 18:26:45\n"
+        "BTCUSD": "\n            GODO AI SIGNAL        #9\n\nBTCUSD\n\nDirection\nBUY\n\nEntry Zone\n64719.55 - 64802.43\n\nStop Loss\n63880.0\n\nTake Profit\n66647.29\n\nRisk Reward\n1 : 2.0\n\nConfidence\n60%\n\nATR\n0.32%\n\nTime\n2026-08-05 22:51:12\n"
     }
 }
