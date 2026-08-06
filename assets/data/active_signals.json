@@ -27,20 +27,6 @@
         "breakeven_sent": false,
         "counted": false
     },
-    "11": {
-        "id": 11,
-        "symbol": "XAUUSD",
-        "side": "BUY",
-        "entry_low": 4263.195283571428,
-        "entry_high": 4267.044416428572,
-        "sl": 4243.58158,
-        "tp": 4313.970089285715,
-        "time": "2026-08-06 02:05:18",
-        "status": "ACTIVE",
-        "protected": false,
-        "breakeven_sent": false,
-        "counted": false
-    },
     "12": {
         "id": 12,
         "symbol": "ETHUSD",
@@ -64,6 +50,20 @@
         "sl": 157.60372,
         "tp": 158.10159099999998,
         "time": "2026-08-06 07:24:04",
+        "status": "ACTIVE",
+        "protected": false,
+        "breakeven_sent": false,
+        "counted": false
+    },
+    "14": {
+        "id": 14,
+        "symbol": "XAUUSD",
+        "side": "SELL",
+        "entry_low": 4241.724558428571,
+        "entry_high": 4246.545241571429,
+        "sl": 4284.96,
+        "tp": 4155.253675285713,
+        "time": "2026-08-06 15:12:09",
         "status": "ACTIVE",
         "protected": false,
         "breakeven_sent": false,
