@@ -4,7 +4,6 @@ const REFRESH_INTERVAL = 5000;
 
 const DATA = {
     signals: "assets/data/signal_statistics.json",
-    latestSignals: "assets/data/latest_signals.json",
     prices: "assets/data/latest_prices.json",
     activeSignals: "assets/data/active_signals.json",
     activeTrades: "assets/data/active_trades.json",
@@ -65,128 +64,6 @@ async function loadSignalStatistics() {
         setText("wins", "Wins : --");
         setText("losses", "Losses : --");
         setText("breakeven", "Breakeven : --");
-    }
-}
-
-// ==========================
-// Latest Signal
-// ==========================
-
-async function loadLatestSignals() {
-
-    const box = document.getElementById("latestSignals");
-
-    if (!box) return;
-
-    try {
-
-        const data = await fetchJSON(DATA.latestSignals);
-
-        if (!data.signals || Object.keys(data.signals).length === 0) {
-
-            box.innerHTML = "Waiting for signals...";
-            return;
-        }
-
-        let html = "";
-
-        for (const symbol of Object.keys(data.signals)) {
-
-            const signalText = data.signals[symbol];
-
-            const directionMatch =
-                signalText.match(/Direction\s+([A-Z]+)/);
-
-            const entryMatch =
-                signalText.match(/Entry Zone\s+([0-9.]+)\s*-\s*([0-9.]+)/);
-
-            const slMatch =
-                signalText.match(/Stop Loss\s+([0-9.]+)/);
-
-            const tpMatch =
-                signalText.match(/Take Profit\s+([0-9.]+)/);
-
-            const rrMatch =
-                signalText.match(/Risk Reward\s+([0-9.]+\s*:\s*[0-9.]+)/);
-
-            const confidenceMatch =
-                signalText.match(/Confidence\s+([0-9]+%)/);
-
-            const timeMatch =
-                signalText.match(/Time\s+([0-9:\-\s]+)/);
-
-            const direction =
-                directionMatch ? directionMatch[1] : "--";
-
-            const entry =
-                entryMatch
-                    ? `${entryMatch[1]} - ${entryMatch[2]}`
-                    : "--";
-
-            const sl =
-                slMatch ? slMatch[1] : "--";
-
-            const tp =
-                tpMatch ? tpMatch[1] : "--";
-
-            const rr =
-                rrMatch ? rrMatch[1] : "--";
-
-            const confidence =
-                confidenceMatch ? confidenceMatch[1] : "--";
-
-            const time =
-                timeMatch ? timeMatch[1].trim() : "--";
-
-            html += `
-                <div class="signal-card">
-
-                    <div class="signal-symbol">
-                        ${symbol}
-                    </div>
-
-                    <div class="signal-direction ${direction}">
-                        ${direction}
-                    </div>
-
-                    <div class="signal-row">
-                        <span>Entry</span>
-                        <strong>${entry}</strong>
-                    </div>
-
-                    <div class="signal-row">
-                        <span>SL</span>
-                        <strong>${sl}</strong>
-                    </div>
-
-                    <div class="signal-row">
-                        <span>TP</span>
-                        <strong>${tp}</strong>
-                    </div>
-
-                    <div class="signal-row">
-                        <span>Risk/Reward</span>
-                        <strong>${rr}</strong>
-                    </div>
-
-                    <div class="signal-row">
-                        <span>Confidence</span>
-                        <strong>${confidence}</strong>
-                    </div>
-
-                    <small>${time}</small>
-
-                </div>
-            `;
-        }
-
-        box.innerHTML = html;
-
-    } catch (error) {
-
-        console.error("Latest signals error:", error);
-
-        box.innerHTML = "Unable to load latest signals.";
     }
 }
 
@@ -523,7 +400,6 @@ async function refreshDashboard() {
 
     await Promise.all([
         loadSignalStatistics(),
-        loadLatestSignals(),
         loadPrices(),
         loadActiveSignals(),
         loadActiveTrades(),
