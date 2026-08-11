@@ -486,3 +486,424 @@ header {
     }
 
 }
+
+/* ==========================
+   GODO AI CORE
+   ========================== */
+
+.core-grid{
+    max-width:1200px;
+    margin:20px auto 70px;
+    padding:20px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:25px;
+}
+
+.core-card{
+    background:#111827;
+    border:1px solid #1f2937;
+    border-radius:18px;
+    padding:30px;
+    text-align:center;
+    transition:.3s;
+}
+
+.core-card:hover{
+    transform:translateY(-7px);
+    border-color:#00d084;
+    box-shadow:0 0 25px rgba(0,208,132,.22);
+}
+
+.core-icon{
+    font-size:42px;
+    margin-bottom:15px;
+}
+
+.core-card h2{
+    color:#00d084;
+    margin-bottom:15px;
+}
+
+.core-card p{
+    color:#cbd5e1;
+    font-size:16px;
+    line-height:28px;
+}
+
+.core-flow{
+    max-width:1200px;
+    margin:0 auto 60px;
+    padding:40px 25px;
+    text-align:center;
+}
+
+.core-flow h2{
+    color:#00e5ff;
+    margin-bottom:35px;
+    font-size:32px;
+}
+
+.flow{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.flow div{
+    background:#161b22;
+    border:1px solid #00e5ff;
+    border-radius:10px;
+    padding:15px 20px;
+    color:white;
+    font-weight:bold;
+}
+
+.flow span{
+    color:#00d084;
+    font-size:25px;
+    font-weight:bold;
+}
+
+.core-flow p{
+    max-width:850px;
+    margin:30px auto 0;
+    color:#9ca3af;
+    line-height:28px;
+}
+
+@media(max-width:768px){
+
+    .core-grid{
+        padding:20px;
+        margin-bottom:30px;
+    }
+
+    .core-flow{
+        padding:25px 15px;
+    }
+
+    .flow{
+        flex-direction:column;
+    }
+
+    .flow span{
+        transform:rotate(90deg);
+    }
+
+}
+
+/* ==========================
+   GODO AI SYSTEM ENGINE
+   ========================== */
+
+.engine-grid{
+    max-width:1200px;
+    margin:10px auto 70px;
+    padding:20px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:25px;
+}
+
+.engine-card{
+    background:#111827;
+    border:1px solid #1f2937;
+    border-radius:18px;
+    padding:30px;
+    text-align:center;
+    transition:.3s;
+}
+
+.engine-card:hover{
+    transform:translateY(-7px);
+    border-color:#00e5ff;
+    box-shadow:0 0 25px rgba(0,229,255,.18);
+}
+
+.engine-icon{
+    font-size:42px;
+    margin-bottom:15px;
+}
+
+.engine-card h2{
+    color:#00e5ff;
+    margin-bottom:15px;
+}
+
+.engine-card p{
+    color:#cbd5e1;
+    line-height:28px;
+    font-size:16px;
+}
+
+.engine-status{
+    display:inline-block;
+    margin-top:20px;
+    padding:7px 15px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.engine-status.active{
+    color:#00d084;
+    border:1px solid #00d084;
+}
+
+.engine-status.development{
+    color:#ffaa00;
+    border:1px solid #ffaa00;
+}
+
+.engine-flow{
+    max-width:1250px;
+    margin:0 auto 60px;
+    padding:40px 20px;
+    text-align:center;
+}
+
+.engine-flow h2{
+    color:#00d084;
+    font-size:32px;
+    margin-bottom:35px;
+}
+
+.engine-pipeline{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.engine-pipeline div{
+    background:#161b22;
+    border:1px solid #00e5ff;
+    border-radius:10px;
+    padding:14px 17px;
+    color:white;
+    font-weight:bold;
+    font-size:14px;
+}
+
+.engine-pipeline span{
+    color:#00d084;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.engine-flow p{
+    max-width:900px;
+    margin:30px auto 0;
+    color:#9ca3af;
+    line-height:28px;
+}
+
+@media(max-width:768px){
+
+    .engine-grid{
+        padding:20px;
+    }
+
+    .engine-flow{
+        padding:25px 15px;
+    }
+
+    .engine-pipeline{
+        flex-direction:column;
+    }
+
+    .engine-pipeline span{
+        transform:rotate(90deg);
+    }
+
+}
+
+/* ==========================
+
+/* ==========================
+   GODO AI CONTACT PAGE
+   ========================== */
+
+.contact-page{
+    min-height:70vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:70px 20px;
+}
+
+.contact-content{
+    width:100%;
+    max-width:850px;
+    text-align:center;
+}
+
+.contact-content h2{
+    font-size:48px;
+    color:#00d084;
+    margin-bottom:15px;
+}
+
+.contact-content h3{
+    font-size:26px;
+    color:#cbd5e1;
+    margin-bottom:35px;
+}
+
+.contact-card{
+    background:#111827;
+    border:1px solid #1f2937;
+    border-radius:20px;
+    padding:35px;
+    box-shadow:0 0 25px rgba(0,208,132,.12);
+    margin-bottom:35px;
+}
+
+.contact-card p{
+    color:#cbd5e1;
+    font-size:19px;
+    line-height:32px;
+    margin-bottom:15px;
+}
+
+.contact-card p:last-child{
+    margin-bottom:0;
+}
+
+@media (max-width:768px){
+
+    .contact-page{
+        padding:50px 18px;
+    }
+
+    .contact-content h2{
+        font-size:36px;
+    }
+
+    .contact-content h3{
+        font-size:21px;
+    }
+
+    .contact-card{
+        padding:25px 20px;
+    }
+
+    .contact-card p{
+        font-size:17px;
+        line-height:28px;
+    }
+
+    .hero-buttons{
+        gap:12px;
+    }
+
+}	
+
+
+/* ==========================
+   GODO AI HYBRID
+   ========================== */
+
+.hybrid-grid {
+    max-width: 1200px;
+    margin: 20px auto 70px;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 25px;
+}
+
+.hybrid-card {
+    background: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 18px;
+    padding: 30px;
+    text-align: center;
+    transition: .3s;
+}
+
+.hybrid-card:hover {
+    transform: translateY(-7px);
+    border-color: #00d084;
+    box-shadow: 0 0 25px rgba(0,208,132,.22);
+}
+
+.hybrid-card h2 {
+    color: #00d084;
+    margin-bottom: 15px;
+}
+
+.hybrid-card p {
+    color: #cbd5e1;
+    line-height: 28px;
+    font-size: 16px;
+}
+
+.hybrid-flow {
+    max-width: 1200px;
+    margin: 0 auto 60px;
+    padding: 40px 25px;
+    text-align: center;
+}
+
+.hybrid-flow h2 {
+    color: #00e5ff;
+    margin-bottom: 35px;
+    font-size: 32px;
+}
+
+.hybrid-pipeline {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.hybrid-pipeline div {
+    background: #161b22;
+    border: 1px solid #00e5ff;
+    border-radius: 10px;
+    padding: 15px 20px;
+    color: white;
+    font-weight: bold;
+}
+
+.hybrid-pipeline span {
+    color: #00d084;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.hybrid-flow p {
+    max-width: 850px;
+    margin: 30px auto 0;
+    color: #9ca3af;
+    line-height: 28px;
+}
+
+@media (max-width: 768px) {
+
+    .hybrid-grid {
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    .hybrid-flow {
+        padding: 25px 15px;
+    }
+
+    .hybrid-pipeline {
+        flex-direction: column;
+    }
+
+    .hybrid-pipeline span {
+        transform: rotate(90deg);
+    }
+
+}
+
