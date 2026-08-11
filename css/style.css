@@ -462,3 +462,27 @@ header {
     color: #888;
 }
 
+/* ==========================
+   GODO AI LOGO
+   ========================== */
+
+.logo img {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+    display: block;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+
+    .logo img {
+        width: 45px;
+        height: 45px;
+    }
+
+}
