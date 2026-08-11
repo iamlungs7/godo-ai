@@ -1,1 +1,8 @@
-{}
+{
+    "updated": "2026-08-10 20:39:08",
+    "signals": {
+        "USDJPY": "\n            GODO AI SIGNAL        #23\n\nUSDJPY\n\nDirection\nBUY\n\nEntry Zone\n159.04 - 159.09\n\nStop Loss\n158.87\n\nTake Profit\n159.42\n\nRisk Reward\n1 : 1.5\n\nConfidence\n40%\n\nATR\n0.08%\n\nTime\n2026-08-10 19:22:44\n",
+        "EURUSD": "\n            GODO AI SIGNAL        #24\n\nEURUSD\n\nDirection\nSELL\n\nEntry Zone\n1.15 - 1.15\n\nStop Loss\n1.16\n\nTake Profit\n1.15\n\nRisk Reward\n1 : 1.5\n\nConfidence\n40%\n\nATR\n0.06%\n\nTime\n2026-08-10 19:22:45\n",
+        "XAUUSD": "\n            GODO AI SIGNAL        #25\n\nXAUUSD\n\nDirection\nBUY\n\nEntry Zone\n4362.38 - 4367.05\n\nStop Loss\n4317.12\n\nTake Profit\n4466.9\n\nRisk Reward\n1 : 2.0\n\nConfidence\n60%\n\nATR\n0.27%\n\nTime\n2026-08-10 20:39:08\n"
+    }
+}

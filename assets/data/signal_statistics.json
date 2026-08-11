@@ -1,1 +1,60 @@
-{}
+{
+    "wins": 4,
+    "losses": 2,
+    "breakeven": 0,
+    "overall": 66.67,
+    "total_signals": 11,
+    "today": {
+        "2026-08-10": {
+            "wins": 4,
+            "losses": 2,
+            "breakeven": 0
+        }
+    },
+    "weekly": {
+        "2026-W32": {
+            "wins": 4,
+            "losses": 2,
+            "breakeven": 0
+        }
+    },
+    "monthly": {
+        "2026-08": {
+            "wins": 4,
+            "losses": 2,
+            "breakeven": 0
+        }
+    },
+    "assets": {
+        "USDJPY": {
+            "wins": 1,
+            "losses": 0,
+            "breakeven": 0
+        },
+        "ETHUSD": {
+            "wins": 1,
+            "losses": 1,
+            "breakeven": 0
+        },
+        "BNBUSD": {
+            "wins": 1,
+            "losses": 0,
+            "breakeven": 0
+        },
+        "XAUUSD": {
+            "wins": 0,
+            "losses": 1,
+            "breakeven": 0
+        },
+        "BTCUSD": {
+            "wins": 1,
+            "losses": 0,
+            "breakeven": 0
+        },
+        "EURUSD": {
+            "wins": 0,
+            "losses": 0,
+            "breakeven": 0
+        }
+    }
+}

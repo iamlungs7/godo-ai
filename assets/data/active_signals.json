@@ -1,1 +1,44 @@
-{}
+{
+    "23": {
+        "id": 23,
+        "symbol": "USDJPY",
+        "side": "BUY",
+        "entry_low": 159.03687642857142,
+        "entry_high": 159.0874235714286,
+        "sl": 158.86592,
+        "tp": 159.4196789285715,
+        "time": "2026-08-10 19:22:44",
+        "status": "ACTIVE",
+        "protected": false,
+        "breakeven_sent": false,
+        "counted": false
+    },
+    "24": {
+        "id": 24,
+        "symbol": "EURUSD",
+        "side": "SELL",
+        "entry_low": 1.1542825714285714,
+        "entry_high": 1.1545374285714285,
+        "sl": 1.15555,
+        "tp": 1.1523814285714282,
+        "time": "2026-08-10 19:22:45",
+        "status": "ACTIVE",
+        "protected": false,
+        "breakeven_sent": false,
+        "counted": false
+    },
+    "25": {
+        "id": 25,
+        "symbol": "XAUUSD",
+        "side": "BUY",
+        "entry_low": 4362.383166571429,
+        "entry_high": 4367.048113428572,
+        "sl": 4317.12328,
+        "tp": 4466.897780285716,
+        "time": "2026-08-10 20:39:08",
+        "status": "ACTIVE",
+        "protected": false,
+        "breakeven_sent": false,
+        "counted": false
+    }
+}
