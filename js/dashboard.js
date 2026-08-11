@@ -263,6 +263,12 @@ async function loadActiveSignals() {
 
         const signals = Object.values(data || {});
 
+        const count = document.getElementById("activeSignalsCount");
+
+        if (count) {
+            count.innerText = `${signals.length} Active Signal${signals.length === 1 ? "" : "s"}`;
+        }
+
         if (signals.length === 0) {
 
             box.innerHTML = "No Active Signals";
@@ -539,3 +545,24 @@ setInterval(
     refreshDashboard,
     REFRESH_INTERVAL
 );
+
+// ==========================
+// Active Signals Toggle
+// ==========================
+
+function toggleActiveSignals() {
+
+    const box = document.getElementById("activeSignals");
+    const arrow = document.getElementById("activeSignalsArrow");
+
+    if (!box) return;
+
+    box.classList.toggle("open");
+
+    if (box.classList.contains("open")) {
+        arrow.innerText = "▾";
+    } else {
+        arrow.innerText = "▸";
+    }
+}
+

@@ -398,3 +398,67 @@ header {
         grid-template-columns: 1fr;
     }
 }
+
+/* ==========================
+   COMPACT ACTIVE SIGNALS
+   ========================== */
+
+.active-signals-card {
+    overflow: hidden;
+}
+
+.active-signals-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.active-signals-title h2 {
+    margin-bottom: 5px;
+}
+
+.active-signals-title span {
+    color: #00d084;
+}
+
+#activeSignalsArrow {
+    font-size: 28px;
+    transition: transform .25s ease;
+}
+
+.active-signals-content {
+    display: none;
+    margin-top: 20px;
+}
+
+.active-signals-content.open {
+    display: block;
+}
+
+.active-signal-card {
+    background: #0b0f17;
+    border: 1px solid #1f2937;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+.active-signal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.active-signal-header strong {
+    color: #00d084;
+}
+
+.active-signal-card small {
+    display: block;
+    margin-top: 12px;
+    color: #888;
+}
+

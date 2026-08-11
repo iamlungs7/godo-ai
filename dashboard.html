@@ -144,12 +144,23 @@ Win Rate : 0%
 
 </div>
 
-<div class="card">
+<div class="card active-signals-card">
 
-<h2>📡 Active Signals</h2>
+<div class="active-signals-title" onclick="toggleActiveSignals()">
 
-<div id="activeSignals">
-Waiting for active signals...
+    <div>
+        <h2>📡 Active Signals</h2>
+        <span id="activeSignalsCount">Loading...</span>
+    </div>
+
+    <span id="activeSignalsArrow">▸</span>
+
+</div>
+
+<div id="activeSignals" class="active-signals-content">
+
+    Waiting for active signals...
+
 </div>
 
 </div>
