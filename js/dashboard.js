@@ -1,328 +1,541 @@
-alert("GODO AI Dashboard JS Loaded");
+console.log("🚀 GODO AI Dashboard v2 Started");
+
+const REFRESH_INTERVAL = 5000;
+
+const DATA = {
+    signals: "assets/data/signal_statistics.json",
+    latestSignals: "assets/data/latest_signals.json",
+    prices: "assets/data/latest_prices.json",
+    activeSignals: "assets/data/active_signals.json",
+    activeTrades: "assets/data/active_trades.json",
+    engine: "assets/data/engine_status.json",
+    trades: "assets/data/trade_statistics.json"
+};
+
+async function fetchJSON(file) {
+    const response = await fetch(file + "?t=" + Date.now());
+
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${file}`);
+    }
+
+    return response.json();
+}
+
+function setText(id, value) {
+    const element = document.getElementById(id);
+
+    if (element) {
+        element.innerText = value;
+    }
+}
+
 // ==========================
-// GODO AI Dashboard Engine
+// Signal Statistics
 // ==========================
 
-console.log("🚀 GODO AI Dashboard Started");
+async function loadSignalStatistics() {
 
-// Platform Status
-const platformStatus = "ONLINE";
+    try {
 
-// Development Mode
-const environment = "Development";
+        const data = await fetchJSON(DATA.signals);
 
-// Last Update
-const lastUpdate = new Date().toLocaleString();
+        const wins = Number(data.wins || 0);
+        const losses = Number(data.losses || 0);
+        const breakeven = Number(data.breakeven || 0);
+        const total = Number(data.total_signals || 0);
 
-// Console Output
-console.log("Status :", platformStatus);
-console.log("Environment :", environment);
-console.log("Updated :", lastUpdate);
+        setText("totalSignals", `Signals : ${total}`);
+        setText("wins", `Wins : ${wins}`);
+        setText("losses", `Losses : ${losses}`);
+        setText("breakeven", `Breakeven : ${breakeven}`);
+
+        const rate =
+            total > 0
+                ? ((wins / (wins + losses + breakeven)) * 100).toFixed(2)
+                : "0.00";
+
+        setText("summaryRate", `Win Rate : ${rate}%`);
+
+    } catch (error) {
+
+        console.error("Signal statistics error:", error);
+
+        setText("totalSignals", "Signals : Error");
+        setText("wins", "Wins : --");
+        setText("losses", "Losses : --");
+        setText("breakeven", "Breakeven : --");
+    }
+}
 
 // ==========================
-// Read Statistics JSON
+// Latest Signal
 // ==========================
 
-fetch("assets/data/signal_statistics.json")
-.then(response => response.json())
-.then(data => {
+async function loadLatestSignals() {
 
-document.getElementById("totalSignals").innerText =
-"Signals : " + data.total_signals;
+    const box = document.getElementById("latestSignals");
 
-document.getElementById("wins").innerText =
-"Wins : " + data.wins;
+    if (!box) return;
 
-document.getElementById("losses").innerText =
-"Losses : " + data.losses;
+    try {
 
-document.getElementById("breakeven").innerText =
-"Breakeven : " + data.breakeven;
-
-})
-.catch(error => {
-
-console.log(error);
-
-});
-
-//============================
-//Latest Signals JSON
-//============================
-
-function loadLatestSignals() {
-
-    fetch("assets/data/latest_signals.json")
-    .then(response => response.json())
-    .then(data => {
-
-        const box = document.getElementById("latestSignals");
+        const data = await fetchJSON(DATA.latestSignals);
 
         if (!data.signals || Object.keys(data.signals).length === 0) {
+
             box.innerHTML = "Waiting for signals...";
             return;
         }
 
         let html = "";
 
-        for (const symbol in data.signals) {
+        for (const symbol of Object.keys(data.signals)) {
 
-            const signal = data.signals[symbol];
+            const signalText = data.signals[symbol];
 
-            const lines = signal.split("\n").filter(Boolean);
+            const directionMatch =
+                signalText.match(/Direction\s+([A-Z]+)/);
 
-            const direction = lines[3];
+            const entryMatch =
+                signalText.match(/Entry Zone\s+([0-9.]+)\s*-\s*([0-9.]+)/);
 
-            const time = lines[lines.length - 1];
+            const slMatch =
+                signalText.match(/Stop Loss\s+([0-9.]+)/);
+
+            const tpMatch =
+                signalText.match(/Take Profit\s+([0-9.]+)/);
+
+            const rrMatch =
+                signalText.match(/Risk Reward\s+([0-9.]+\s*:\s*[0-9.]+)/);
+
+            const confidenceMatch =
+                signalText.match(/Confidence\s+([0-9]+%)/);
+
+            const timeMatch =
+                signalText.match(/Time\s+([0-9:\-\s]+)/);
+
+            const direction =
+                directionMatch ? directionMatch[1] : "--";
+
+            const entry =
+                entryMatch
+                    ? `${entryMatch[1]} - ${entryMatch[2]}`
+                    : "--";
+
+            const sl =
+                slMatch ? slMatch[1] : "--";
+
+            const tp =
+                tpMatch ? tpMatch[1] : "--";
+
+            const rr =
+                rrMatch ? rrMatch[1] : "--";
+
+            const confidence =
+                confidenceMatch ? confidenceMatch[1] : "--";
+
+            const time =
+                timeMatch ? timeMatch[1].trim() : "--";
 
             html += `
                 <div class="signal-card">
-                    <strong>${symbol}</strong><br>
-                    ${direction}<br>
+
+                    <div class="signal-symbol">
+                        ${symbol}
+                    </div>
+
+                    <div class="signal-direction ${direction}">
+                        ${direction}
+                    </div>
+
+                    <div class="signal-row">
+                        <span>Entry</span>
+                        <strong>${entry}</strong>
+                    </div>
+
+                    <div class="signal-row">
+                        <span>SL</span>
+                        <strong>${sl}</strong>
+                    </div>
+
+                    <div class="signal-row">
+                        <span>TP</span>
+                        <strong>${tp}</strong>
+                    </div>
+
+                    <div class="signal-row">
+                        <span>Risk/Reward</span>
+                        <strong>${rr}</strong>
+                    </div>
+
+                    <div class="signal-row">
+                        <span>Confidence</span>
+                        <strong>${confidence}</strong>
+                    </div>
+
                     <small>${time}</small>
+
                 </div>
-                <hr>
             `;
         }
 
         box.innerHTML = html;
 
-    })
+    } catch (error) {
 
-    .catch(error => {
-        console.log(error);
-    });
+        console.error("Latest signals error:", error);
 
+        box.innerHTML = "Unable to load latest signals.";
+    }
 }
 
 // ==========================
 // Live Prices
 // ==========================
 
-function loadPrices(){
+async function loadPrices() {
 
-fetch("assets/data/latest_prices.json")
-.then(response=>response.json())
-.then(data=>{
+    const box = document.getElementById("livePrices");
 
-const prices=data.prices;
+    if (!box) return;
 
-document.getElementById("livePrices").innerHTML=`
-<b>BTCUSD</b> : ${Number(prices.BTCUSD).toFixed(2)}<br>
-<b>ETHUSD</b> : ${Number(prices.ETHUSD).toFixed(2)}<br>
-<b>BNBUSD</b> : ${Number(prices.BNBUSD).toFixed(2)}<br>
-<b>XAUUSD</b> : ${Number(prices.XAUUSD).toFixed(2)}<br>
-<b>NDX</b> : ${Number(prices.NDX).toFixed(2)}
-`;
-document.getElementById("lastRefresh").innerText =
-"Last Refresh: " + new Date().toLocaleTimeString();
+    try {
 
-})
+        const data = await fetchJSON(DATA.prices);
 
-.catch(error => console.log(error));
+        const prices = data.prices || {};
 
+        const symbols = [
+            "BTCUSD",
+            "ETHUSD",
+            "BNBUSD",
+            "XAUUSD",
+            "NDX",
+            "USDJPY",
+            "EURUSD"
+        ];
+
+        let html = "";
+
+        symbols.forEach(symbol => {
+
+            if (prices[symbol] === undefined) return;
+
+            const price = Number(prices[symbol]);
+
+            html += `
+                <div class="price-row">
+                    <span>${symbol}</span>
+                    <strong>${price.toFixed(5)}</strong>
+                </div>
+            `;
+        });
+
+        box.innerHTML = html || "Waiting for prices...";
+
+        setText(
+            "lastRefresh",
+            "Last Refresh: " + new Date().toLocaleTimeString()
+        );
+
+    } catch (error) {
+
+        console.error("Price error:", error);
+
+        box.innerHTML = "Unable to load prices.";
+    }
 }
 
 // ==========================
-// Active Trades
+// Active Signals
 // ==========================
 
-function loadActiveTrades() {
+async function loadActiveSignals() {
 
-    fetch("assets/data/active_signals.json")
-    .then(response => response.json())
-    .then(data => {
+    const box = document.getElementById("activeSignals");
 
-        const box = document.getElementById("activeTrades");
+    if (!box) return;
 
-        if (!data || data.length === 0) {
-            box.innerHTML = "No Active Trades";
+    try {
+
+        const data = await fetchJSON(DATA.activeSignals);
+
+        const signals = Object.values(data || {});
+
+        if (signals.length === 0) {
+
+            box.innerHTML = "No Active Signals";
             return;
         }
 
         let html = "";
 
-        data.forEach(trade => {
+        signals.forEach(signal => {
 
-            let statusColor = "#ffffff";
+            const status =
+                signal.status || "UNKNOWN";
 
-            switch (trade.status) {
+            const protection =
+                signal.protected
+                    ? "🛡️ PROTECTED"
+                    : "Unprotected";
 
-                case "ACTIVE":
-                    statusColor = "#00ff66";
-                    break;
-
-                case "WIN":
-                    statusColor = "#00bfff";
-                    break;
-
-                case "LOSS":
-                    statusColor = "#ff4444";
-                    break;
-
-                case "BREAKEVEN":
-                    statusColor = "#ffaa00";
-                    break;
-
-                case "PROTECTED":
-                    statusColor = "#ffd700";
-                    break;
-
-            }
+            const statusClass =
+                status.toLowerCase();
 
             html += `
-            <div class="signal-card">
+                <div class="active-signal-card">
 
-            <strong>${trade.symbol}</strong><br>
+                    <div class="active-signal-header">
 
-            ${trade.side}<br><br>
+                        <strong>
+                            #${signal.id} ${signal.symbol}
+                        </strong>
 
-            Entry :
-            ${Number(trade.entry_low).toFixed(2)}
-            -
-            ${Number(trade.entry_high).toFixed(2)}
-            <br>
+                        <span class="status ${statusClass}">
+                            ${status}
+                        </span>
 
-            TP :
-            ${Number(trade.tp).toFixed(2)}
-            <br>
+                    </div>
 
-            SL :
-            ${Number(trade.sl).toFixed(2)}
-            <br><br>
+                    <div class="trade-direction">
+                        ${signal.side}
+                    </div>
 
-            Status :
-            <b style="color:${statusColor}">
-            ${trade.status}
-            </b>
-            </div>
+                    <div class="trade-grid">
 
-            <hr>
+                        <div>
+                            <span>Entry</span>
+                            <strong>
+                                ${Number(signal.entry_low).toFixed(5)}
+                                -
+                                ${Number(signal.entry_high).toFixed(5)}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Stop Loss</span>
+                            <strong>
+                                ${Number(signal.sl).toFixed(5)}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Take Profit</span>
+                            <strong>
+                                ${Number(signal.tp).toFixed(5)}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Protection</span>
+                            <strong>
+                                ${protection}
+                            </strong>
+                        </div>
+
+                    </div>
+
+                    <small>${signal.time || "--"}</small>
+
+                </div>
             `;
-
         });
 
         box.innerHTML = html;
 
-    })
+        setText(
+            "summaryActive",
+            `Active Signals : ${signals.length}`
+        );
 
-    .catch(error => console.log(error));
+    } catch (error) {
 
+        console.error("Active signals error:", error);
+
+        box.innerHTML = "Unable to load active signals.";
+    }
+}
+
+// ==========================
+// Trade Statistics
+// ==========================
+
+async function loadTradingSummary() {
+
+    try {
+
+        const data = await fetchJSON(DATA.trades);
+
+        const wins = Number(data.wins || 0);
+        const losses = Number(data.losses || 0);
+        const breakeven = Number(data.breakeven || 0);
+        const active = Number(data.active_trades || 0);
+
+        const totalClosed =
+            wins + losses + breakeven;
+
+        const rate =
+            totalClosed > 0
+                ? ((wins / totalClosed) * 100).toFixed(1)
+                : "0.0";
+
+        setText(
+            "summaryActive",
+            `Active Trades : ${active}`
+        );
+
+        setText(
+            "summaryWins",
+            `Wins : ${wins}`
+        );
+
+        setText(
+            "summaryLosses",
+            `Losses : ${losses}`
+        );
+
+        setText(
+            "summaryBreakeven",
+            `Breakeven : ${breakeven}`
+        );
+
+        setText(
+            "summaryRate",
+            `Win Rate : ${rate}%`
+        );
+
+    } catch (error) {
+
+        console.error("Trade statistics error:", error);
+
+        setText("summaryActive", "Active Signals : --");
+        setText("summaryWins", "Wins : --");
+        setText("summaryLosses", "Losses : --");
+        setText("summaryBreakeven", "Breakeven : --");
+        setText("summaryRate", "Win Rate : --");
+    }
 }
 
 // ==========================
 // Engine Status
 // ==========================
 
-function loadEngineStatus(){
+async function loadEngineStatus() {
 
-fetch("assets/data/engine_status.json")
-.then(response => response.json())
-.then(data => {
+    try {
 
-document.getElementById("engineStatus").innerText =
-data.status;
+        const data = await fetchJSON(DATA.engine);
 
-document.getElementById("scannerStatus").innerText =
-data.scanner;
+        setText(
+            "engineStatus",
+            data.status || "UNKNOWN"
+        );
 
-})
-.catch(error => console.log(error));
+        setText(
+            "scannerStatus",
+            data.scanner || "UNKNOWN"
+        );
 
+        updateCountdown(
+            data.last_scan,
+            Number(data.next_scan || 300)
+        );
+
+    } catch (error) {
+
+        console.error("Engine status error:", error);
+
+        setText("engineStatus", "OFFLINE");
+        setText("scannerStatus", "DATA ERROR");
+    }
 }
 
 // ==========================
 // Next Scan Countdown
 // ==========================
 
-let seconds = 300;
+function updateCountdown(lastScan, interval) {
+
+    const element =
+        document.getElementById("nextScan");
+
+    if (!element) return;
+
+    if (!lastScan) {
+
+        element.innerText =
+            formatSeconds(interval);
+
+        return;
+    }
+
+    const scanTime =
+        new Date(lastScan.replace(" ", "T"));
+
+    const elapsed =
+        Math.floor((Date.now() - scanTime.getTime()) / 1000);
+
+    let remaining =
+        interval - elapsed;
+
+    if (remaining < 0) {
+        remaining = 0;
+    }
+
+    element.innerText =
+        formatSeconds(remaining);
+}
+
+function formatSeconds(seconds) {
+
+    const min =
+        Math.floor(seconds / 60);
+
+    const sec =
+        seconds % 60;
+
+    return `${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+}
+
+// ==========================
+// Refresh Countdown
+// ==========================
 
 setInterval(() => {
 
-    const min = Math.floor(seconds / 60);
-    const sec = seconds % 60;
-
-    document.getElementById("nextScan").innerText =
-    `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
-
-    if (seconds > 0) {
-        seconds--;
-    } else {
-        seconds = 300;
-    }
+    loadEngineStatus();
 
 }, 1000);
 
 // ==========================
-// Auto Refresh Dashboard
+// Dashboard Refresh
 // ==========================
 
-loadLatestSignals();
+async function refreshDashboard() {
 
-loadPrices();
+    await Promise.all([
+        loadSignalStatistics(),
+        loadLatestSignals(),
+        loadPrices(),
+        loadActiveSignals(),
+        loadActiveTrades(),
+        loadTradingSummary(),
+        loadEngineStatus()
+    ]);
 
-loadTradingSummary();
-
-loadActiveTrades();
-
-loadEngineStatus();
-
-setInterval(()=>{
-
-loadLatestSignals();
-
-loadPrices();
-
-loadTradingSummary();
-
-loadActiveTrades();
-
-loadEngineStatus();
-
-},5000);
-
-//===========================
-// Trade Summary
-//===========================
-
-function loadTradingSummary(){
-
-fetch("assets/data/trade_statistics.json")
-
-.then(response=>response.json())
-
-.then(data=>{
-
-const wins=data.wins || 0;
-
-const losses=data.losses || 0;
-
-const breakeven=data.breakeven || 0;
-
-const total=wins+losses+breakeven;
-
-const active = data.active_trades || 0;
-
-const rate=
-total===0
-?0
-:((wins/total)*100).toFixed(1);
-
-document.getElementById("summaryActive").innerText =
-"Active Trades : " + active;
-
-document.getElementById("summaryWins").innerText=
-"Wins : "+wins;
-
-document.getElementById("summaryLosses").innerText=
-"Losses : "+losses;
-
-document.getElementById("summaryBreakeven").innerText=
-"Breakeven : "+breakeven;
-
-document.getElementById("summaryRate").innerText=
-"Win Rate : "+rate+"%";
-
-});
-
+    console.log(
+        "🔄 Dashboard refreshed:",
+        new Date().toLocaleTimeString()
+    );
 }
+
+// Initial load
+refreshDashboard();
+
+// Refresh every 5 seconds
+setInterval(
+    refreshDashboard,
+    REFRESH_INTERVAL
+);

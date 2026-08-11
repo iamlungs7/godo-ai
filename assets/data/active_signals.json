@@ -5,12 +5,12 @@
         "side": "BUY",
         "entry_low": 159.03687642857142,
         "entry_high": 159.0874235714286,
-        "sl": 158.86592,
+        "sl": 159.25355125000004,
         "tp": 159.4196789285715,
         "time": "2026-08-10 19:22:44",
         "status": "ACTIVE",
-        "protected": false,
-        "breakeven_sent": false,
+        "protected": true,
+        "breakeven_sent": true,
         "counted": false
     },
     "24": {
@@ -47,12 +47,12 @@
         "side": "BUY",
         "entry_low": 600.777,
         "entry_high": 601.223,
-        "sl": 598.29,
+        "sl": 604.156,
         "tp": 607.0889999999999,
         "time": "2026-08-11 10:05:32",
         "status": "ACTIVE",
-        "protected": false,
-        "breakeven_sent": false,
+        "protected": true,
+        "breakeven_sent": true,
         "counted": false
     }
 }
