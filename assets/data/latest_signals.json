@@ -1,6 +1,8 @@
 {
-    "updated": "2026-08-11 10:05:32",
+    "updated": "2026-08-11 12:10:22",
     "signals": {
-        "BNBUSD": "\n            GODO AI SIGNAL        #26\n\nBNBUSD\n\nDirection\nBUY\n\nEntry Zone\n600.78 - 601.22\n\nStop Loss\n598.29\n\nTake Profit\n607.09\n\nRisk Reward\n1 : 2.0\n\nConfidence\n60%\n\nATR\n0.18%\n\nTime\n2026-08-11 10:05:32\n"
+        "BNBUSD": "\n            GODO AI SIGNAL        #26\n\nBNBUSD\n\nDirection\nBUY\n\nEntry Zone\n600.78 - 601.22\n\nStop Loss\n598.29\n\nTake Profit\n607.09\n\nRisk Reward\n1 : 2.0\n\nConfidence\n60%\n\nATR\n0.18%\n\nTime\n2026-08-11 10:05:32\n",
+        "BTCUSD": "\n            GODO AI SIGNAL        #27\n\nBTCUSD\n\nDirection\nBUY\n\nEntry Zone\n64157.13 - 64194.87\n\nStop Loss\n63852.0\n\nTake Profit\n65052.03\n\nRisk Reward\n1 : 2.5\n\nConfidence\n65%\n\nATR\n0.15%\n\nTime\n2026-08-11 11:49:43\n",
+        "ETHUSD": "\n            GODO AI SIGNAL        #28\n\nETHUSD\n\nDirection\nBUY\n\nEntry Zone\n1881.35 - 1883.01\n\nStop Loss\n1870.29\n\nTake Profit\n1914.8\n\nRisk Reward\n1 : 2.5\n\nConfidence\n75%\n\nATR\n0.22%\n\nTime\n2026-08-11 12:10:22\n"
     }
 }
