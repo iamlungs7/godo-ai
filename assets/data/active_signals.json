@@ -26,5 +26,19 @@
         "protected": false,
         "breakeven_sent": false,
         "counted": false
+    },
+    "31": {
+        "id": 31,
+        "symbol": "EURUSD",
+        "side": "BUY",
+        "entry_low": 1.1546485714285715,
+        "entry_high": 1.1549514285714286,
+        "sl": 1.15335,
+        "tp": 1.1573535714285714,
+        "time": "2026-08-12 15:39:43",
+        "status": "ACTIVE",
+        "protected": false,
+        "breakeven_sent": false,
+        "counted": false
     }
 }

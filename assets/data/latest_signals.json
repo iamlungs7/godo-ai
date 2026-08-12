@@ -1,6 +1,6 @@
 {
-    "updated": "2026-08-11 17:43:15",
+    "updated": "2026-08-12 15:39:43",
     "signals": {
-        "ETHUSD": "\n            GODO AI SIGNAL        #30\n\nETHUSD\n\nDirection\nSELL\n\nEntry Zone\n1868.6 - 1871.98\n\nStop Loss\n1897.8\n\nTake Profit\n1795.61\n\nRisk Reward\n1 : 2.5\n\nConfidence\n70%\n\nATR\n0.45%\n\nTime\n2026-08-11 17:43:15\n"
+        "EURUSD": "\n            GODO AI SIGNAL        #31\n\nEURUSD\n\nDirection\nBUY\n\nEntry Zone\n1.15 - 1.15\n\nStop Loss\n1.15\n\nTake Profit\n1.16\n\nRisk Reward\n1 : 1.5\n\nConfidence\n40%\n\nATR\n0.07%\n\nTime\n2026-08-12 15:39:43\n"
     }
 }
