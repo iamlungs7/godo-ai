@@ -5,13 +5,99 @@ const loginMessage = document.getElementById("loginMessage");
 
 if (loginForm) {
 
-    loginForm.addEventListener("submit", function(event) {
+    loginForm.addEventListener("submit", async function(event) {
 
         event.preventDefault();
 
+        const email =
+            document.getElementById("email").value.trim();
+
+        const password =
+            document.getElementById("password").value;
+
+
+        if (!email || !password) {
+
+            loginMessage.innerText =
+                "Please enter your email and password.";
+
+            return;
+        }
+
+
         loginMessage.innerText =
-            "Authentication service is being prepared.";
+            "🔐 Authenticating with GODO AI...";
+
+
+        try {
+
+            const response = await fetch(
+                "http://127.0.0.1:8000/api/login",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                }
+            );
+
+
+            const data = await response.json();
+
+
+            if (!response.ok) {
+
+                loginMessage.innerText =
+                    data.error || "Login failed.";
+
+                return;
+            }
+
+
+            localStorage.setItem(
+                "godo_ai_user",
+                JSON.stringify(data.user)
+            );
+
+
+            localStorage.setItem(
+                "godo_ai_authenticated",
+                "true"
+            );
+
+
+            loginMessage.innerText =
+                "✅ Login successful. Opening GODO AI...";
+
+
+            setTimeout(() => {
+
+                window.location.href =
+                    "dashboard.html";
+
+            }, 1000);
+
+
+        } catch (error) {
+
+            console.error(
+                "Login error:",
+                error
+            );
+
+            loginMessage.innerText =
+                "Unable to connect to GODO AI authentication server.";
+
+        }
 
     });
 
 }
+
+console.log("🔥 GODO AI LOGIN VERSION 2 ACTIVE");

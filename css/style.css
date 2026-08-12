@@ -1022,3 +1022,148 @@ header {
 
 }
 
+
+/* ==========================
+   GODO AI COMMAND MENU
+   ========================== */
+
+.godo-menu-button {
+    position: fixed;
+    top: 18px;
+    right: 20px;
+    z-index: 1001;
+
+    width: 48px;
+    height: 48px;
+
+    border: 1px solid #00d084;
+    border-radius: 12px;
+
+    background: #111827;
+    color: #00d084;
+
+    font-size: 25px;
+    cursor: pointer;
+
+    box-shadow: 0 0 18px rgba(0, 208, 132, .18);
+}
+
+.godo-menu-button:hover {
+    background: #00d084;
+    color: #000;
+}
+
+.godo-menu {
+    position: fixed;
+    top: 0;
+    right: -320px;
+
+    width: 300px;
+    height: 100vh;
+
+    z-index: 1000;
+
+    padding: 25px 20px;
+
+    background: #0f172a;
+    border-left: 1px solid #1f2937;
+
+    box-shadow: -10px 0 35px rgba(0,0,0,.45);
+
+    transition: right .3s ease;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.godo-menu.open {
+    right: 0;
+}
+
+.godo-menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding-bottom: 20px;
+    margin-bottom: 10px;
+
+    border-bottom: 1px solid #1f2937;
+}
+
+.godo-menu-header strong {
+    color: #00d084;
+    font-size: 22px;
+}
+
+.godo-menu-header button {
+    border: none;
+    background: transparent;
+    color: #cbd5e1;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.godo-menu-user {
+    padding: 14px;
+    margin-bottom: 10px;
+
+    background: #111827;
+    border: 1px solid #263244;
+    border-radius: 10px;
+
+    color: #cbd5e1;
+    font-size: 14px;
+}
+
+.godo-menu a {
+    display: block;
+
+    padding: 13px 14px;
+
+    border-radius: 9px;
+
+    color: #cbd5e1;
+    text-decoration: none;
+
+    transition: .2s;
+}
+
+.godo-menu a:hover {
+    background: #111827;
+    color: #00d084;
+}
+
+.godo-logout {
+    margin-top: auto;
+
+    padding: 13px 14px;
+
+    border: 1px solid #ff4444;
+    border-radius: 9px;
+
+    background: transparent;
+    color: #ff5555;
+
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.godo-logout:hover {
+    background: #ff4444;
+    color: #000;
+}
+
+@media (max-width: 768px) {
+
+    .godo-menu-button {
+        top: 14px;
+        right: 14px;
+    }
+
+    .godo-menu {
+        width: 280px;
+    }
+
+}

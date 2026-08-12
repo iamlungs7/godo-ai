@@ -11,6 +11,7 @@
 
 <link rel="stylesheet" href="css/style.css">
 
+<script src="js/auth.js"></script>
 </head>
 
 <body>
@@ -43,6 +44,33 @@
 
 </nav>
 
+<button id="godoMenuButton" class="godo-menu-button" aria-label="Open GODO AI Menu">
+    ☰
+</button>
+
+<div id="godoMenu" class="godo-menu">
+    <div class="godo-menu-header">
+        <strong>GODO AI</strong>
+        <button id="godoMenuClose" aria-label="Close menu">×</button>
+    </div>
+
+    <div class="godo-menu-user" id="godoMenuUser">
+        👤 GODO AI User
+    </div>
+
+    <a href="index.html">🏠 Home</a>
+    <a href="core.html">🧠 Core</a>
+    <a href="system.html">⚙️ System Engine</a>
+    <a href="hybrid.html">🔗 Hybrid</a>
+    <a href="notifier.html">🔔 Notifier</a>
+    <a href="dashboard.html">📊 Dashboard</a>
+    <a href="contact.html">📩 Contact</a>
+
+    <button id="godoLogout" class="godo-logout">
+        🚪 Logout
+    </button>
+</div>
+
 <header>
 
 <div class="hero">
@@ -56,6 +84,8 @@
 </div>
 
 <section class="dashboard-header">
+<div id="userSession" class="user-session"></div>
+<div id="userSession" class="user-session"></div>
 
 <h1>🚀 GODO AI CONTROL CENTER</h1>
 
@@ -246,6 +276,8 @@ Waiting for prices...
 
 </header>
 
+<script src="js/session.js"></script>
+<script src="js/menu.js"></script>
 <script src="js/dashboard.js"></script>
 
 </body>
