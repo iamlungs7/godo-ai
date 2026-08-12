@@ -88,12 +88,14 @@ async function loadPrices() {
             "ETHUSD",
             "BNBUSD",
             "XAUUSD",
-            "NDX",
             "USDJPY",
             "EURUSD",
             "GBPUSD",
             "USDCAD",
-            "AUDCAD"
+            "AUDCAD",
+            "NDX"
+
+
         ];
 
         let html = "";
