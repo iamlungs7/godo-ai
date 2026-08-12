@@ -67,6 +67,12 @@ if (loginForm) {
 
 
             localStorage.setItem(
+                "godo_ai_session_token",
+                data.session_token
+            );
+
+
+            localStorage.setItem(
                 "godo_ai_authenticated",
                 "true"
             );

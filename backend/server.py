@@ -30,6 +30,16 @@ def init_db():
         )
     """)
 
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS sessions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            token TEXT NOT NULL UNIQUE,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        )
+    """)
+
     conn.commit()
     conn.close()
 
@@ -141,8 +151,45 @@ class AuthHandler(BaseHTTPRequestHandler):
 
         self.end_headers()
 
-    def do_GET(self):
 
+    def get_session_user(self):
+
+        auth_header = self.headers.get(
+            "Authorization",
+            ""
+        )
+
+        if not auth_header.startswith("Bearer "):
+
+            return None
+
+        token = auth_header[7:].strip()
+
+        if not token:
+
+            return None
+
+        conn = get_db()
+
+        user = conn.execute(
+            """
+            SELECT
+                users.id,
+                users.full_name,
+                users.email
+            FROM sessions
+            JOIN users
+                ON users.id = sessions.user_id
+            WHERE sessions.token = ?
+            """,
+            (token,)
+        ).fetchone()
+
+        conn.close()
+
+        return user
+
+    def do_GET(self):
         path = urlparse(
             self.path
         ).path
@@ -158,6 +205,37 @@ class AuthHandler(BaseHTTPRequestHandler):
             )
 
             return
+
+        if path == "/api/session":
+
+            user = self.get_session_user()
+
+            if not user:
+
+                self.send_json(
+                    401,
+                    {
+                        "authenticated": False,
+                        "error": "Invalid or missing session."
+                    }
+                )
+
+                return
+
+            self.send_json(
+                200,
+                {
+                    "authenticated": True,
+                    "user": {
+                        "id": user["id"],
+                        "full_name": user["full_name"],
+                        "email": user["email"]
+                    }
+                }
+            )
+
+            return
+
 
         self.send_json(
             404,
@@ -365,6 +443,19 @@ class AuthHandler(BaseHTTPRequestHandler):
 
 
         session_token = secrets.token_urlsafe(32)
+
+        conn = get_db()
+
+        conn.execute(
+            """
+            INSERT INTO sessions (user_id, token)
+            VALUES (?, ?)
+            """,
+            (user["id"], session_token)
+        )
+
+        conn.commit()
+        conn.close()
 
 
         self.send_json(
