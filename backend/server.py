@@ -5,10 +5,10 @@ import secrets
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse
 
-HOST = "127.0.0.1"
-PORT = 8000
+HOST = "0.0.0.0"
+PORT = int(__import__("os").environ.get("PORT", "8000"))
 
-DB_PATH = "backend/database/godo_ai.db"
+DB_PATH = __import__("os").environ.get("GODO_AI_DB_PATH", "backend/database/godo_ai.db")
 
 
 def get_db():
