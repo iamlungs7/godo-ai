@@ -12,5 +12,19 @@
         "protected": false,
         "breakeven_sent": false,
         "counted": false
+    },
+    "2": {
+        "id": 2,
+        "symbol": "XAUUSD",
+        "side": "SELL",
+        "entry_low": 4019.686857142857,
+        "entry_high": 4025.6731428571425,
+        "sl": 4064.68,
+        "tp": 3907.2040000000006,
+        "time": "2026-08-12 20:44:00",
+        "status": "ACTIVE",
+        "protected": false,
+        "breakeven_sent": false,
+        "counted": false
     }
 }

@@ -3,12 +3,17 @@
     "losses": 0,
     "breakeven": 0,
     "overall": 0,
-    "total_signals": 1,
+    "total_signals": 2,
     "today": {},
     "weekly": {},
     "monthly": {},
     "assets": {
         "EURUSD": {
+            "wins": 0,
+            "losses": 0,
+            "breakeven": 0
+        },
+        "XAUUSD": {
             "wins": 0,
             "losses": 0,
             "breakeven": 0
