@@ -90,7 +90,10 @@ async function loadPrices() {
             "XAUUSD",
             "NDX",
             "USDJPY",
-            "EURUSD"
+            "EURUSD",
+            "GBPUSD",
+            "USDCAD",
+            "AUDCAD"
         ];
 
         let html = "";
