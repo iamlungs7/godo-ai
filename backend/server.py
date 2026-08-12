@@ -85,7 +85,7 @@ class AuthHandler(BaseHTTPRequestHandler):
 
         self.send_header(
             "Access-Control-Allow-Origin",
-            "http://127.0.0.1:8080"
+            "https://iamlungs7.github.io"
         )
 
         self.send_header(
@@ -126,7 +126,7 @@ class AuthHandler(BaseHTTPRequestHandler):
 
         self.send_header(
             "Access-Control-Allow-Origin",
-            "http://127.0.0.1:8080"
+            "https://iamlungs7.github.io"
         )
 
         self.send_header(
