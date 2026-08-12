@@ -6,21 +6,50 @@ const menuClose = document.getElementById("godoMenuClose");
 const logoutButton = document.getElementById("godoLogout");
 const menuUser = document.getElementById("godoMenuUser");
 
+
+function closeMenu() {
+
+    if (menu) {
+        menu.classList.remove("open");
+    }
+
+}
+
+
+function toggleMenu() {
+
+    if (menu) {
+        menu.classList.toggle("open");
+    }
+
+}
+
+
 if (menuButton && menu) {
 
-    menuButton.addEventListener("click", function() {
-        menu.classList.add("open");
+    menuButton.addEventListener("click", function(event) {
+
+        event.stopPropagation();
+
+        toggleMenu();
+
     });
 
 }
+
 
 if (menuClose && menu) {
 
-    menuClose.addEventListener("click", function() {
-        menu.classList.remove("open");
+    menuClose.addEventListener("click", function(event) {
+
+        event.stopPropagation();
+
+        closeMenu();
+
     });
 
 }
+
 
 if (menuUser) {
 
@@ -49,6 +78,7 @@ if (menuUser) {
 
 }
 
+
 if (logoutButton) {
 
     logoutButton.addEventListener("click", function() {
@@ -56,8 +86,28 @@ if (logoutButton) {
         localStorage.removeItem("godo_ai_authenticated");
         localStorage.removeItem("godo_ai_user");
 
+        closeMenu();
+
         window.location.href = "login.html";
 
     });
 
 }
+
+
+document.addEventListener("click", function(event) {
+
+    if (!menu || !menu.classList.contains("open")) {
+        return;
+    }
+
+    if (
+        !menu.contains(event.target) &&
+        event.target !== menuButton
+    ) {
+
+        closeMenu();
+
+    }
+
+});

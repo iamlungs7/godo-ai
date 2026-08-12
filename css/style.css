@@ -1167,3 +1167,56 @@ header {
     }
 
 }
+
+
+/* ==========================
+   GODO AI MENU FINAL FIX
+   ========================== */
+
+.godo-menu-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
+}
+
+.godo-menu {
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.godo-menu.open {
+    right: 0;
+}
+
+.godo-logout {
+    width: 100%;
+    flex-shrink: 0;
+}
+
+
+/* Desktop */
+
+@media (min-width: 769px) {
+
+    .godo-menu-button {
+        display: flex;
+    }
+
+}
+
+
+/* Mobile */
+
+@media (max-width: 768px) {
+
+    .godo-menu-button {
+        display: flex;
+    }
+
+    .godo-menu {
+        width: min(280px, 85vw);
+    }
+
+}
