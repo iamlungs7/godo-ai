@@ -1,1 +1,16 @@
-{}
+{
+    "1": {
+        "id": 1,
+        "symbol": "EURUSD",
+        "side": "SELL",
+        "entry_low": 1.1533704285714286,
+        "entry_high": 1.1537095714285714,
+        "sl": 1.15622,
+        "tp": 1.1476712857142857,
+        "time": "2026-08-12 21:30:40",
+        "status": "ACTIVE",
+        "protected": false,
+        "breakeven_sent": false,
+        "counted": false
+    }
+}
