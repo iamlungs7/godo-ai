@@ -47,7 +47,7 @@ if (registerForm) {
         try {
 
             const response = await fetch(
-                "http://127.0.0.1:8000/api/register",
+                "https://godo-ai-production.up.railway.app/api/register",
                 {
                     method: "POST",
 
