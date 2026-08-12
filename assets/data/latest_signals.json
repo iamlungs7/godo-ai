@@ -1,7 +1,1 @@
-{
-    "updated": "2026-08-12 20:44:00",
-    "signals": {
-        "EURUSD": "\n            GODO AI SIGNAL        #1\n\nEURUSD\n\nDirection\nSELL\n\nEntry Zone\n1.15338 - 1.1537\n\nStop Loss\n1.15622\n\nTake Profit\n1.14769\n\nRisk Reward\n1 : 2.0\n\nConfidence\n60%\n\nATR\n0.07%\n\nTime\n2026-08-12 20:33:02\n\n\u26a0\ufe0f PRICE DATA NOTICE\n\nGODO AI signals are generated using external market-data sources.\nPrices, spreads and execution levels may differ from your broker's\nprices due to differences in liquidity providers, pricing feeds,\nspreads and execution timing.\n\nAlways verify the live price on your broker before entering a trade.\nTrade with caution!!!\n",
-        "XAUUSD": "\n            GODO AI SIGNAL        #2\n\nXAUUSD\n\nDirection\nSELL\n\nEntry Zone\n4019.68686 - 4025.67314\n\nStop Loss\n4064.68\n\nTake Profit\n3907.204\n\nRisk Reward\n1 : 2.5\n\nConfidence\n70%\n\nATR\n0.38%\n\nTime\n2026-08-12 20:44:00\n\n\u26a0\ufe0f PRICE DATA NOTICE\n\nGODO AI signals are generated using external market-data sources.\nPrices, spreads and execution levels may differ from your broker's\nprices due to differences in liquidity providers, pricing feeds,\nspreads and execution timing.\n\nAlways verify the live price on your broker before entering a trade.\nTrade with caution!!!\n"
-    }
-}
+{}
