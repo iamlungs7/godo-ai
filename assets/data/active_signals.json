@@ -12,5 +12,61 @@
         "protected": false,
         "breakeven_sent": false,
         "counted": false
+    },
+    "2": {
+        "id": 2,
+        "symbol": "ETHUSD",
+        "side": "SELL",
+        "entry_low": 1883.7967142857142,
+        "entry_high": 1886.4432857142856,
+        "sl": 1925.0,
+        "tp": 1760.1868571428568,
+        "time": "2026-08-12 23:38:25",
+        "status": "ACTIVE",
+        "protected": false,
+        "breakeven_sent": false,
+        "counted": false
+    },
+    "4": {
+        "id": 4,
+        "symbol": "BNBUSD",
+        "side": "BUY",
+        "entry_low": 611.471,
+        "entry_high": 612.029,
+        "sl": 608.93,
+        "tp": 616.6775,
+        "time": "2026-08-13 05:37:40",
+        "status": "ACTIVE",
+        "protected": false,
+        "breakeven_sent": false,
+        "counted": false
+    },
+    "5": {
+        "id": 5,
+        "symbol": "XAUUSD",
+        "side": "SELL",
+        "entry_low": 4396.0097427142855,
+        "entry_high": 4400.612357285715,
+        "sl": 4449.78419,
+        "tp": 4288.460848142856,
+        "time": "2026-08-13 06:18:55",
+        "status": "ACTIVE",
+        "protected": false,
+        "breakeven_sent": false,
+        "counted": false
+    },
+    "6": {
+        "id": 6,
+        "symbol": "BTCUSD",
+        "side": "BUY",
+        "entry_low": 63688.28314285714,
+        "entry_high": 63746.33685714286,
+        "sl": 63380.0,
+        "tp": 64479.010571428575,
+        "time": "2026-08-13 07:10:11",
+        "status": "ACTIVE",
+        "protected": false,
+        "breakeven_sent": false,
+        "counted": false
     }
 }
