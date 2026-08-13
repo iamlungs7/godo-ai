@@ -13,7 +13,7 @@ async function checkAuthentication() {
         localStorage.removeItem("godo_ai_authenticated");
         localStorage.removeItem("godo_ai_user");
 
-        window.location.href = "login.html";
+        document.body.innerHTML = "<h2 style=\"color:red;padding:30px\">GODO DEBUG: NO SESSION TOKEN</h2>"; return;
 
         return;
     }
@@ -55,8 +55,7 @@ async function checkAuthentication() {
                 "godo_ai_user"
             );
 
-            window.location.href =
-                "login.html";
+            document.body.innerHTML = "<h2 style=\"color:red;padding:30px\">GODO DEBUG: SERVER REJECTED SESSION</h2>"; return;
 
             return;
         }
