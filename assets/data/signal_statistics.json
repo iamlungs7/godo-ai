@@ -3,7 +3,7 @@
     "losses": 1,
     "breakeven": 0,
     "overall": 0.0,
-    "total_signals": 6,
+    "total_signals": 7,
     "today": {
         "2026-08-13": {
             "wins": 0,
@@ -47,6 +47,11 @@
             "breakeven": 0
         },
         "BTCUSD": {
+            "wins": 0,
+            "losses": 0,
+            "breakeven": 0
+        },
+        "GBPUSD": {
             "wins": 0,
             "losses": 0,
             "breakeven": 0

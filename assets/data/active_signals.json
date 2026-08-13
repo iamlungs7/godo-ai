@@ -68,5 +68,19 @@
         "protected": false,
         "breakeven_sent": false,
         "counted": false
+    },
+    "7": {
+        "id": 7,
+        "symbol": "GBPUSD",
+        "side": "SELL",
+        "entry_low": 1.3485447142857143,
+        "entry_high": 1.3487752857142856,
+        "sl": 1.35008,
+        "tp": 1.345474142857143,
+        "time": "2026-08-13 08:52:32",
+        "status": "ACTIVE",
+        "protected": false,
+        "breakeven_sent": false,
+        "counted": false
     }
 }
