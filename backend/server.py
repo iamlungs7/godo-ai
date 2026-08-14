@@ -88,7 +88,7 @@ class AuthHandler(BaseHTTPRequestHandler):
         self.send_response(status)
 
         self.send_header(
-            "Content-Type, Authorization",
+            "Content-Type",
             "application/json"
         )
 
