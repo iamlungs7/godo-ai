@@ -88,7 +88,7 @@ class AuthHandler(BaseHTTPRequestHandler):
         self.send_response(status)
 
         self.send_header(
-            "Content-Type",
+            "Content-Type, Authorization",
             "application/json"
         )
 
@@ -105,7 +105,7 @@ class AuthHandler(BaseHTTPRequestHandler):
 
         self.send_header(
             "Access-Control-Allow-Headers",
-            "Content-Type"
+            "Content-Type, Authorization"
         )
 
         self.send_header(
@@ -146,7 +146,7 @@ class AuthHandler(BaseHTTPRequestHandler):
 
         self.send_header(
             "Access-Control-Allow-Headers",
-            "Content-Type"
+            "Content-Type, Authorization"
         )
 
         self.end_headers()
