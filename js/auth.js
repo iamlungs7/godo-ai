@@ -89,8 +89,13 @@ async function checkAuthentication() {
             error
         );
 
-        window.location.href =
-            "login.html";
+        document.body.innerHTML =
+            "<h2 style=\"color:red;padding:30px\">" +
+            "GODO DEBUG: AUTH FETCH ERROR<br><br>" +
+            String(error) +
+            "</h2>";
+
+        return;
 
     }
 
