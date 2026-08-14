@@ -30,6 +30,67 @@ function setText(id, value) {
 }
 
 // ==========================
+// GODO AI Account Profile
+// ==========================
+
+function loadAccountProfile() {
+
+    const storedUser =
+        localStorage.getItem("godo_ai_user");
+
+    if (!storedUser) {
+
+        setText("accountFullName", "Unknown");
+        setText("accountId", "--");
+        setText("accountEmail", "--");
+        setText("accountStatus", "Not Authenticated");
+
+        return;
+    }
+
+    try {
+
+        const user =
+            JSON.parse(storedUser);
+
+        setText(
+            "accountFullName",
+            user.full_name || "GODO AI User"
+        );
+
+        setText(
+            "accountId",
+            user.id !== undefined
+                ? "GODO-" + String(user.id).padStart(6, "0")
+                : "--"
+        );
+
+        setText(
+            "accountEmail",
+            user.email || "--"
+        );
+
+        setText(
+            "accountStatus",
+            "Authenticated"
+        );
+
+    } catch (error) {
+
+        console.error(
+            "❌ Account profile error:",
+            error
+        );
+
+        setText("accountFullName", "Unknown");
+        setText("accountId", "--");
+        setText("accountEmail", "--");
+        setText("accountStatus", "Session Error");
+
+    }
+}
+
+// ==========================
 // Signal Statistics
 // ==========================
 
@@ -402,6 +463,8 @@ setInterval(() => {
 // ==========================
 
 async function refreshDashboard() {
+
+    loadAccountProfile();
 
     await Promise.all([
         loadSignalStatistics(),

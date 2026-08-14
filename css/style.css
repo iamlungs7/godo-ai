@@ -1220,3 +1220,39 @@ header {
     }
 
 }
+
+/* ==========================
+   GODO AI Account Profile
+   ========================== */
+
+.account-profile-card {
+    width: 100%;
+}
+
+.account-profile {
+    display: grid;
+    gap: 12px;
+}
+
+.account-profile p {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin: 0;
+    padding: 12px 14px;
+    border-radius: 8px;
+}
+
+.account-profile p strong {
+    font-weight: 600;
+}
+
+.account-profile p span {
+    text-align: right;
+    font-weight: 500;
+}
+
+#accountStatus {
+    font-weight: 700;
+}
