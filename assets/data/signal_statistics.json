@@ -1,34 +1,39 @@
 {
-    "wins": 0,
-    "losses": 1,
-    "breakeven": 0,
-    "overall": 0.0,
-    "total_signals": 7,
+    "wins": 3,
+    "losses": 7,
+    "breakeven": 1,
+    "overall": 27.27,
+    "total_signals": 14,
     "today": {
         "2026-08-13": {
             "wins": 0,
-            "losses": 1,
+            "losses": 6,
             "breakeven": 0
+        },
+        "2026-08-14": {
+            "wins": 3,
+            "losses": 1,
+            "breakeven": 1
         }
     },
     "weekly": {
         "2026-W32": {
-            "wins": 0,
-            "losses": 1,
-            "breakeven": 0
+            "wins": 3,
+            "losses": 7,
+            "breakeven": 1
         }
     },
     "monthly": {
         "2026-08": {
-            "wins": 0,
-            "losses": 1,
-            "breakeven": 0
+            "wins": 3,
+            "losses": 7,
+            "breakeven": 1
         }
     },
     "assets": {
         "EURUSD": {
-            "wins": 0,
-            "losses": 0,
+            "wins": 1,
+            "losses": 1,
             "breakeven": 0
         },
         "ETHUSD": {
@@ -37,23 +42,28 @@
             "breakeven": 0
         },
         "XAUUSD": {
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "breakeven": 0
         },
         "BNBUSD": {
             "wins": 0,
-            "losses": 0,
-            "breakeven": 0
+            "losses": 1,
+            "breakeven": 1
         },
         "BTCUSD": {
             "wins": 0,
-            "losses": 0,
+            "losses": 1,
             "breakeven": 0
         },
         "GBPUSD": {
             "wins": 0,
-            "losses": 0,
+            "losses": 2,
+            "breakeven": 0
+        },
+        "USDJPY": {
+            "wins": 1,
+            "losses": 1,
             "breakeven": 0
         }
     }
