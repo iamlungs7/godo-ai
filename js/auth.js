@@ -1,10 +1,10 @@
 console.log("🔐 GODO AI Server Authentication Guard Loaded");
 
-const sessionToken =
-    localStorage.getItem("godo_ai_session_token");
-
-
 async function checkAuthentication() {
+
+    const sessionToken =
+        localStorage.getItem("godo_ai_session_token");
+
 
     if (!sessionToken) {
 
@@ -13,12 +13,7 @@ async function checkAuthentication() {
         localStorage.removeItem("godo_ai_authenticated");
         localStorage.removeItem("godo_ai_user");
 
-        document.body.innerHTML =
-            "<h2 style=\"color:red;padding:30px\">" +
-            "GODO DEBUG: NO SESSION TOKEN<br>" +
-            "Token value: [" + String(localStorage.getItem("godo_ai_session_token")) + "]" +
-            "</h2>";
-        return;
+        window.location.href = "login.html";
 
         return;
     }
@@ -60,7 +55,8 @@ async function checkAuthentication() {
                 "godo_ai_user"
             );
 
-            document.body.innerHTML = "<h2 style=\"color:red;padding:30px\">GODO DEBUG: SERVER REJECTED SESSION</h2>"; return;
+            window.location.href =
+                "login.html";
 
             return;
         }
@@ -89,13 +85,8 @@ async function checkAuthentication() {
             error
         );
 
-        document.body.innerHTML =
-            "<h2 style=\"color:red;padding:30px\">" +
-            "GODO DEBUG: AUTH FETCH ERROR<br><br>" +
-            String(error) +
-            "</h2>";
-
-        return;
+        window.location.href =
+            "login.html";
 
     }
 
