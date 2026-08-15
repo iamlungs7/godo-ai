@@ -40,5 +40,19 @@
         "protected": false,
         "breakeven_sent": false,
         "counted": false
+    },
+    "15": {
+        "id": 15,
+        "symbol": "BNBUSD",
+        "side": "BUY",
+        "entry_low": 607.1037142857142,
+        "entry_high": 607.4962857142857,
+        "sl": 605.04,
+        "tp": 613.6370000000001,
+        "time": "2026-08-15 01:40:04",
+        "status": "ACTIVE",
+        "protected": false,
+        "breakeven_sent": false,
+        "counted": false
     }
 }
