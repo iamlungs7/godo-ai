@@ -84,8 +84,17 @@ if (loginForm) {
 
             setTimeout(() => {
 
-                window.location.href =
-                    "dashboard.html";
+                if (data.user && data.user.role === "master") {
+
+                    window.location.href =
+                        "master.html";
+
+                } else {
+
+                    window.location.href =
+                        "dashboard.html";
+
+                }
 
             }, 1000);
 

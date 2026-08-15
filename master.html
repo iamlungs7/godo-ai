@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>GODO AI Master Control</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<header class="dashboard-header">
+
+    <h1>👑 GODO AI MASTER CONTROL</h1>
+
+    <p>
+        Main administrative control center
+    </p>
+
+</header>
+
+
+<main class="master-dashboard">
+
+
+    <section class="card master-profile-card">
+
+        <h2>👑 Master Account</h2>
+
+        <div class="master-profile">
+
+            <p>
+                <strong>Name</strong>
+                <span id="masterName">Loading...</span>
+            </p>
+
+            <p>
+                <strong>Account ID</strong>
+                <span id="masterId">Loading...</span>
+            </p>
+
+            <p>
+                <strong>Email</strong>
+                <span id="masterEmail">Loading...</span>
+            </p>
+
+            <p>
+                <strong>Role</strong>
+                <span id="masterRole">Loading...</span>
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="master-stats-grid">
+
+        <div class="card">
+
+            <h2>👥 Users</h2>
+
+            <strong
+                id="totalUsers"
+                class="master-stat">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>🟢 Sessions</h2>
+
+            <strong
+                id="activeSessions"
+                class="master-stat">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>🛡️ Security</h2>
+
+            <strong
+                id="securityStatus"
+                class="master-stat">
+                Checking...
+            </strong>
+
+        </div>
+
+    </section>
+
+
+    <section class="card">
+
+        <h2>👥 GODO AI Accounts</h2>
+
+        <div id="usersTable">
+
+            Loading accounts...
+
+        </div>
+
+    </section>
+
+
+    <button
+        id="masterLogout"
+        class="godo-logout">
+
+        🚪 Logout
+
+    </button>
+
+
+</main>
+
+
+<script src="js/master.js?v=1"></script>
+
+</body>
+
+</html>

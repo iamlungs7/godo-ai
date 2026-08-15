@@ -26,7 +26,8 @@ def init_db():
             full_name TEXT NOT NULL,
             email TEXT NOT NULL UNIQUE,
             password_hash TEXT NOT NULL,
-            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            role TEXT NOT NULL DEFAULT 'user'
         )
     """)
 
@@ -176,7 +177,8 @@ class AuthHandler(BaseHTTPRequestHandler):
             SELECT
                 users.id,
                 users.full_name,
-                users.email
+                users.email,
+                users.role
             FROM sessions
             JOIN users
                 ON users.id = sessions.user_id
@@ -188,6 +190,33 @@ class AuthHandler(BaseHTTPRequestHandler):
         conn.close()
 
         return user
+
+    def require_master(self):
+        user = self.get_session_user()
+
+        if not user:
+            self.send_json(
+                401,
+                {
+                    "authenticated": False,
+                    "error": "Authentication required."
+                }
+            )
+            return None
+
+        if user["role"] != "master":
+            self.send_json(
+                403,
+                {
+                    "authenticated": True,
+                    "authorized": False,
+                    "error": "Master account required."
+                }
+            )
+            return None
+
+        return user
+
 
     def do_GET(self):
         path = urlparse(
@@ -229,8 +258,70 @@ class AuthHandler(BaseHTTPRequestHandler):
                     "user": {
                         "id": user["id"],
                         "full_name": user["full_name"],
-                        "email": user["email"]
+                        "email": user["email"],
+                        "role": user["role"]
                     }
+                }
+            )
+
+            return
+
+        if path == "/api/master/overview":
+
+            master = self.require_master()
+
+            if not master:
+                return
+
+            conn = get_db()
+
+            users = conn.execute(
+                """
+                SELECT
+                    id,
+                    full_name,
+                    email,
+                    role,
+                    created_at
+                FROM users
+                ORDER BY id ASC
+                """
+            ).fetchall()
+
+            session_count = conn.execute(
+                "SELECT COUNT(*) FROM sessions"
+            ).fetchone()[0]
+
+            user_count = conn.execute(
+                "SELECT COUNT(*) FROM users"
+            ).fetchone()[0]
+
+            conn.close()
+
+            self.send_json(
+                200,
+                {
+                    "success": True,
+                    "master": {
+                        "id": master["id"],
+                        "full_name": master["full_name"],
+                        "email": master["email"],
+                        "role": master["role"]
+                    },
+                    "overview": {
+                        "total_users": user_count,
+                        "active_sessions": session_count
+                    },
+                    "users": [
+                        {
+                            "id": user["id"],
+                            "full_name": user["full_name"],
+                            "email": user["email"],
+                            "role": user["role"],
+                            "created_at": user["created_at"]
+                        }
+                        for user in users
+                    ]
                 }
             )
 
@@ -405,7 +496,7 @@ class AuthHandler(BaseHTTPRequestHandler):
 
         user = conn.execute(
             """
-            SELECT id, full_name, email, password_hash
+            SELECT id, full_name, email, password_hash, role
             FROM users
             WHERE email = ?
             """,
@@ -467,7 +558,8 @@ class AuthHandler(BaseHTTPRequestHandler):
                 "user": {
                     "id": user["id"],
                     "full_name": user["full_name"],
-                    "email": user["email"]
+                    "email": user["email"],
+                    "role": user["role"]
                 }
             }
         )
