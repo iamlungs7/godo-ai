@@ -2,6 +2,7 @@ import json
 import sqlite3
 import hashlib
 import secrets
+from datetime import datetime, timedelta, timezone
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse
 
@@ -78,6 +79,22 @@ def verify_password(password, stored_hash):
 
     except ValueError:
         return False
+
+
+def hash_reset_token(token):
+    return hashlib.sha256(
+        token.encode("utf-8")
+    ).hexdigest()
+
+
+def utc_now():
+    return datetime.now(timezone.utc)
+
+
+def reset_token_expiry(minutes=15):
+    return (
+        utc_now() + timedelta(minutes=minutes)
+    ).isoformat()
 
 
 class AuthHandler(BaseHTTPRequestHandler):
@@ -357,6 +374,20 @@ class AuthHandler(BaseHTTPRequestHandler):
             return
 
 
+        if path == "/api/forgot-password":
+
+            self.forgot_password(data)
+
+            return
+
+
+        if path == "/api/reset-password":
+
+            self.reset_password(data)
+
+            return
+
+
         if path == "/api/register":
 
             self.register(data)
@@ -375,6 +406,281 @@ class AuthHandler(BaseHTTPRequestHandler):
             404,
             {
                 "error": "Endpoint not found"
+            }
+        )
+
+
+    def forgot_password(self, data):
+
+        email = str(
+            data.get("email", "")
+        ).strip().lower()
+
+        # Always return the same response so the endpoint
+        # does not reveal whether an email exists.
+        generic_response = {
+            "success": True,
+            "message": (
+                "If the account exists, a password reset "
+                "request has been created."
+            )
+        }
+
+        if not email:
+            self.send_json(
+                200,
+                generic_response
+            )
+            return
+
+        conn = get_db()
+
+        user = conn.execute(
+            """
+            SELECT id, email
+            FROM users
+            WHERE email = ?
+            """,
+            (email,)
+        ).fetchone()
+
+        if not user:
+            conn.close()
+
+            self.send_json(
+                200,
+                generic_response
+            )
+            return
+
+        # Invalidate previous unused reset tokens.
+        conn.execute(
+            """
+            UPDATE password_reset_tokens
+            SET used = 1
+            WHERE user_id = ?
+              AND used = 0
+            """,
+            (user["id"],)
+        )
+
+        raw_token = secrets.token_urlsafe(32)
+
+        token_hash = hash_reset_token(
+            raw_token
+        )
+
+        expires_at = reset_token_expiry(15)
+
+        conn.execute(
+            """
+            INSERT INTO password_reset_tokens
+            (
+                user_id,
+                token_hash,
+                expires_at,
+                used
+            )
+            VALUES (?, ?, ?, 0)
+            """,
+            (
+                user["id"],
+                token_hash,
+                expires_at
+            )
+        )
+
+        conn.commit()
+        conn.close()
+
+        # Temporary development response.
+        # This will be replaced by email delivery in Step 3.
+        response = dict(generic_response)
+
+        response["development_token"] = raw_token
+
+        self.send_json(
+            200,
+            response
+        )
+
+
+    def reset_password(self, data):
+
+        token = str(
+            data.get("token", "")
+        ).strip()
+
+        new_password = str(
+            data.get("new_password", "")
+        )
+
+        if not token or not new_password:
+
+            self.send_json(
+                400,
+                {
+                    "success": False,
+                    "error": (
+                        "Reset token and new password "
+                        "are required."
+                    )
+                }
+            )
+
+            return
+
+        if len(new_password) < 8:
+
+            self.send_json(
+                400,
+                {
+                    "success": False,
+                    "error": (
+                        "Password must be at least "
+                        "8 characters."
+                    )
+                }
+            )
+
+            return
+
+        token_hash = hash_reset_token(
+            token
+        )
+
+        conn = get_db()
+
+        reset = conn.execute(
+            """
+            SELECT
+                id,
+                user_id,
+                expires_at,
+                used
+            FROM password_reset_tokens
+            WHERE token_hash = ?
+            """,
+            (token_hash,)
+        ).fetchone()
+
+        if not reset:
+
+            conn.close()
+
+            self.send_json(
+                400,
+                {
+                    "success": False,
+                    "error": "Invalid reset token."
+                }
+            )
+
+            return
+
+        if reset["used"]:
+
+            conn.close()
+
+            self.send_json(
+                400,
+                {
+                    "success": False,
+                    "error": "Reset token has already been used."
+                }
+            )
+
+            return
+
+        try:
+            expires_at = datetime.fromisoformat(
+                reset["expires_at"]
+            )
+
+            if utc_now() >= expires_at:
+
+                conn.execute(
+                    """
+                    UPDATE password_reset_tokens
+                    SET used = 1
+                    WHERE id = ?
+                    """,
+                    (reset["id"],)
+                )
+
+                conn.commit()
+                conn.close()
+
+                self.send_json(
+                    400,
+                    {
+                        "success": False,
+                        "error": "Reset token has expired."
+                    }
+                )
+
+                return
+
+        except ValueError:
+
+            conn.close()
+
+            self.send_json(
+                400,
+                {
+                    "success": False,
+                    "error": "Invalid reset token."
+                }
+            )
+
+            return
+
+        password_hash = hash_password(
+            new_password
+        )
+
+        conn.execute(
+            """
+            UPDATE users
+            SET password_hash = ?,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+            """,
+            (
+                password_hash,
+                reset["user_id"]
+            )
+        )
+
+        conn.execute(
+            """
+            UPDATE password_reset_tokens
+            SET used = 1
+            WHERE id = ?
+            """,
+            (reset["id"],)
+        )
+
+        # Revoke existing sessions after password reset.
+        conn.execute(
+            """
+            DELETE FROM sessions
+            WHERE user_id = ?
+            """,
+            (reset["user_id"],)
+        )
+
+        conn.commit()
+        conn.close()
+
+        self.send_json(
+            200,
+            {
+                "success": True,
+                "message": (
+                    "Password reset successful. "
+                    "Please login again."
+                )
             }
         )
 
