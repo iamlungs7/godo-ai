@@ -1443,3 +1443,22 @@ header {
     }
 
 }
+
+
+.auth-card button {
+    background: #00d084;
+    color: #06110c;
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.auth-card button:hover {
+    background: #00b873;
+    transform: translateY(-1px);
+}
+
+.auth-card button:active {
+    transform: translateY(0);
+}
