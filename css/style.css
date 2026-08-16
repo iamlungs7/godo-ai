@@ -1322,3 +1322,26 @@ header {
         margin-left: auto;
     }
 }
+
+/* ==========================
+   GODO AI Forgot Password Link
+   ========================== */
+
+.forgot-password-row {
+    text-align: right;
+    margin-top: -10px;
+    margin-bottom: 20px;
+}
+
+.forgot-password-row a {
+    color: #00d084;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.forgot-password-row a:hover {
+    opacity: 0.75;
+    text-decoration: underline;
+}
