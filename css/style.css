@@ -1345,3 +1345,101 @@ header {
     opacity: 0.75;
     text-decoration: underline;
 }
+
+
+/* ==========================
+   GODO AI PASSWORD RESET
+   ========================== */
+
+.auth-container {
+    min-height: 78vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 500px;
+    background: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 18px;
+    padding: 32px;
+    text-align: left;
+    box-shadow: 0 0 25px rgba(0, 208, 132, .10);
+}
+
+.auth-card h1 {
+    color: #00d084;
+    font-size: 32px;
+    margin: 0 0 12px;
+}
+
+.auth-card > p {
+    color: #94a3b8;
+    line-height: 26px;
+    margin-bottom: 24px;
+}
+
+.auth-card input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 14px;
+    margin-bottom: 18px;
+    border: 1px solid #263244;
+    border-radius: 10px;
+    background: #0b0f17;
+    color: #ffffff;
+    font-size: 16px;
+    outline: none;
+}
+
+.auth-card input:focus {
+    border-color: #00d084;
+    box-shadow: 0 0 10px rgba(0, 208, 132, .15);
+}
+
+.auth-card button {
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#forgotMessage {
+    text-align: center;
+    margin: 18px 0;
+    color: #ffaa00;
+    line-height: 24px;
+}
+
+.auth-card > a {
+    display: block;
+    margin-top: 20px;
+    color: #00d084;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+}
+
+.auth-card > a:hover {
+    opacity: .75;
+}
+
+@media (max-width: 768px) {
+
+    .auth-container {
+        padding: 45px 18px;
+    }
+
+    .auth-card {
+        padding: 24px 20px;
+    }
+
+    .auth-card h1 {
+        font-size: 28px;
+    }
+
+}
