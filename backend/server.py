@@ -90,6 +90,43 @@ def init_db():
         )
     """)
 
+
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS pending_registrations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            full_name TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
+            phone_number TEXT,
+            country TEXT NOT NULL,
+            region TEXT NOT NULL,
+            city TEXT NOT NULL,
+            physical_address TEXT,
+            identity_hash TEXT NOT NULL,
+            email_verified INTEGER NOT NULL DEFAULT 0,
+            phone_verified INTEGER NOT NULL DEFAULT 0,
+            password_hash TEXT,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
+
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS pending_verification_codes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            registration_id INTEGER NOT NULL,
+            channel TEXT NOT NULL,
+            destination TEXT NOT NULL,
+            code_hash TEXT NOT NULL,
+            expires_at TEXT NOT NULL,
+            attempts INTEGER NOT NULL DEFAULT 0,
+            used INTEGER NOT NULL DEFAULT 0,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (registration_id)
+                REFERENCES pending_registrations(id)
+        )
+    """)
+
     conn.commit()
     conn.close()
 
@@ -452,6 +489,34 @@ class AuthHandler(BaseHTTPRequestHandler):
         if path == "/api/reset-password":
 
             self.reset_password(data)
+
+            return
+
+
+        if path == "/api/register/start":
+
+            self.register_start(data)
+
+            return
+
+
+        if path == "/api/register/verify-email":
+
+            self.verify_pending_email(data)
+
+            return
+
+
+        if path == "/api/register/verify-phone":
+
+            self.verify_pending_phone(data)
+
+            return
+
+
+        if path == "/api/register/complete":
+
+            self.complete_registration(data)
 
             return
 
@@ -980,6 +1045,1043 @@ class AuthHandler(BaseHTTPRequestHandler):
         conn.close()
 
         return True, "Verification successful."
+
+
+    def create_pending_verification_code(
+        self,
+        registration_id,
+        channel,
+        destination
+    ):
+        """
+        Create a secure one-time OTP for a pending registration.
+
+        The raw OTP is never stored in the database.
+        Only its SHA-256 hash is stored.
+        """
+
+        code = f"{secrets.randbelow(1000000):06d}"
+
+        code_hash = hashlib.sha256(
+            code.encode("utf-8")
+        ).hexdigest()
+
+        expires_at = (
+            utc_now() + timedelta(minutes=15)
+        ).isoformat()
+
+        conn = get_db()
+
+        # Invalidate previous unused OTPs for this
+        # registration and verification channel.
+        conn.execute(
+            """
+            UPDATE pending_verification_codes
+            SET used = 1
+            WHERE registration_id = ?
+              AND channel = ?
+              AND used = 0
+            """,
+            (
+                registration_id,
+                channel
+            )
+        )
+
+        conn.execute(
+            """
+            INSERT INTO pending_verification_codes (
+                registration_id,
+                channel,
+                destination,
+                code_hash,
+                expires_at,
+                attempts,
+                used
+            )
+            VALUES (?, ?, ?, ?, ?, 0, 0)
+            """,
+            (
+                registration_id,
+                channel,
+                destination,
+                code_hash,
+                expires_at
+            )
+        )
+
+        conn.commit()
+        conn.close()
+
+        return code
+
+
+    def register_start(self, data):
+
+        full_name = str(
+            data.get("full_name", "")
+        ).strip()
+
+        surname = str(
+            data.get("surname", "")
+        ).strip()
+
+        email = str(
+            data.get("email", "")
+        ).strip().lower()
+
+        phone_number = str(
+            data.get("phone_number", "")
+        ).strip()
+
+        country = str(
+            data.get("country", "")
+        ).strip()
+
+        region = str(
+            data.get("region", "")
+        ).strip()
+
+        city = str(
+            data.get("city", "")
+        ).strip()
+
+        physical_address = str(
+            data.get("physical_address", "")
+        ).strip()
+
+        identity_number = str(
+            data.get("identity_number", "")
+        ).strip()
+
+
+        if not all([
+            full_name,
+            surname,
+            email,
+            phone_number,
+            country,
+            region,
+            city,
+            physical_address,
+            identity_number
+        ]):
+
+            self.send_json(
+                400,
+                {
+                    "error": (
+                        "All personal details are required."
+                    )
+                }
+            )
+
+            return
+
+
+        try:
+
+            identity_hash = hash_identity(
+                identity_number
+            )
+
+        except RuntimeError as error:
+
+            print(
+                "Registration security error:",
+                error
+            )
+
+            self.send_json(
+                500,
+                {
+                    "error": (
+                        "Registration security "
+                        "is not configured."
+                    )
+                }
+            )
+
+            return
+
+
+        conn = get_db()
+
+
+        existing_email = conn.execute(
+            """
+            SELECT id
+            FROM users
+            WHERE email = ?
+            """,
+            (email,)
+        ).fetchone()
+
+
+        if existing_email:
+
+            conn.close()
+
+            self.send_json(
+                409,
+                {
+                    "error": (
+                        "An account with this "
+                        "email already exists."
+                    )
+                }
+            )
+
+            return
+
+
+        existing_identity = conn.execute(
+            """
+            SELECT id
+            FROM users
+            WHERE identity_hash = ?
+            """,
+            (identity_hash,)
+        ).fetchone()
+
+
+        if existing_identity:
+
+            conn.close()
+
+            self.send_json(
+                409,
+                {
+                    "error": (
+                        "An account with this "
+                        "identity already exists."
+                    )
+                }
+            )
+
+            return
+
+
+        existing_pending = conn.execute(
+            """
+            SELECT id
+            FROM pending_registrations
+            WHERE email = ?
+            """,
+            (email,)
+        ).fetchone()
+
+
+        if existing_pending:
+
+            registration_id = existing_pending["id"]
+
+            conn.execute(
+                """
+                UPDATE pending_registrations
+                SET full_name = ?,
+                    phone_number = ?,
+                    country = ?,
+                    region = ?,
+                    city = ?,
+                    physical_address = ?,
+                    identity_hash = ?,
+                    email_verified = 0,
+                    phone_verified = 0,
+                    password_hash = NULL,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE id = ?
+                """,
+                (
+                    f"{full_name} {surname}",
+                    phone_number,
+                    country,
+                    region,
+                    city,
+                    physical_address,
+                    identity_hash,
+                    registration_id
+                )
+            )
+
+        else:
+
+            cursor = conn.execute(
+                """
+                INSERT INTO pending_registrations (
+                    full_name,
+                    email,
+                    phone_number,
+                    country,
+                    region,
+                    city,
+                    physical_address,
+                    identity_hash
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    f"{full_name} {surname}",
+                    email,
+                    phone_number,
+                    country,
+                    region,
+                    city,
+                    physical_address,
+                    identity_hash
+                )
+            )
+
+            registration_id = cursor.lastrowid
+
+
+        conn.commit()
+        conn.close()
+
+
+        email_otp = self.create_pending_verification_code(
+            registration_id,
+            "email",
+            email
+        )
+
+        phone_otp = self.create_pending_verification_code(
+            registration_id,
+            "phone",
+            phone_number
+        )
+
+
+        try:
+
+            send_verification_email(
+                email,
+                email_otp
+            )
+
+        except Exception as error:
+
+            print(
+                "Pending email verification delivery error:",
+                error
+            )
+
+            self.send_json(
+                503,
+                {
+                    "success": False,
+                    "error": (
+                        "Registration started, but "
+                        "the verification email could "
+                        "not be sent. Please try again."
+                    )
+                }
+            )
+
+            return
+
+
+        self.send_json(
+            201,
+            {
+                "success": True,
+                "message": (
+                    "Registration started. "
+                    "Please verify your email."
+                ),
+                "registration_id": registration_id,
+                "next_step": "email_verification"
+            }
+        )
+
+
+    def verify_pending_email(self, data):
+
+        registration_id = data.get("registration_id")
+
+        code = str(
+            data.get("code", "")
+        ).strip()
+
+        if not registration_id or not code:
+
+            self.send_json(
+                400,
+                {
+                    "error": (
+                        "Registration ID and verification code "
+                        "are required."
+                    )
+                }
+            )
+
+            return
+
+        try:
+            registration_id = int(registration_id)
+        except (TypeError, ValueError):
+
+            self.send_json(
+                400,
+                {
+                    "error": "Invalid registration ID."
+                }
+            )
+
+            return
+
+        conn = get_db()
+
+        registration = conn.execute(
+            """
+            SELECT id, email, email_verified
+            FROM pending_registrations
+            WHERE id = ?
+            """,
+            (registration_id,)
+        ).fetchone()
+
+        conn.close()
+
+        if not registration:
+
+            self.send_json(
+                404,
+                {
+                    "error": "Registration could not be found."
+                }
+            )
+
+            return
+
+        if registration["email_verified"]:
+
+            self.send_json(
+                200,
+                {
+                    "success": True,
+                    "email_verified": True,
+                    "next_step": "phone"
+                }
+            )
+
+            return
+
+        ok, message = self.verify_pending_code(
+            registration_id,
+            "email",
+            code
+        )
+
+        if not ok:
+
+            self.send_json(
+                400,
+                {
+                    "error": message
+                }
+            )
+
+            return
+
+        conn = get_db()
+
+        conn.execute(
+            """
+            UPDATE pending_registrations
+            SET email_verified = 1,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+            """,
+            (registration_id,)
+        )
+
+        conn.commit()
+        conn.close()
+
+        self.send_json(
+            200,
+            {
+                "success": True,
+                "email_verified": True,
+                "next_step": "phone"
+            }
+        )
+
+
+    def verify_pending_phone(self, data):
+
+        registration_id = data.get("registration_id")
+
+        code = str(
+            data.get("code", "")
+        ).strip()
+
+        phone_number = str(
+            data.get("phone_number", "")
+        ).strip()
+
+        if not registration_id or not code or not phone_number:
+
+            self.send_json(
+                400,
+                {
+                    "error": (
+                        "Registration ID, phone number and "
+                        "verification code are required."
+                    )
+                }
+            )
+
+            return
+
+        try:
+            registration_id = int(registration_id)
+        except (TypeError, ValueError):
+
+            self.send_json(
+                400,
+                {
+                    "error": "Invalid registration ID."
+                }
+            )
+
+            return
+
+        conn = get_db()
+
+        registration = conn.execute(
+            """
+            SELECT
+                id,
+                email_verified,
+                phone_number,
+                phone_verified
+            FROM pending_registrations
+            WHERE id = ?
+            """,
+            (registration_id,)
+        ).fetchone()
+
+        conn.close()
+
+        if not registration:
+
+            self.send_json(
+                404,
+                {
+                    "error": "Registration could not be found."
+                }
+            )
+
+            return
+
+        if not registration["email_verified"]:
+
+            self.send_json(
+                403,
+                {
+                    "error": "Email verification is required first."
+                }
+            )
+
+            return
+
+        if registration["phone_number"] != phone_number:
+
+            self.send_json(
+                400,
+                {
+                    "error": "Phone number does not match registration."
+                }
+            )
+
+            return
+
+        if registration["phone_verified"]:
+
+            self.send_json(
+                200,
+                {
+                    "success": True,
+                    "phone_verified": True,
+                    "next_step": "password"
+                }
+            )
+
+            return
+
+        ok, message = self.verify_pending_code(
+            registration_id,
+            "phone",
+            code
+        )
+
+        if not ok:
+
+            self.send_json(
+                400,
+                {
+                    "error": message
+                }
+            )
+
+            return
+
+        conn = get_db()
+
+        conn.execute(
+            """
+            UPDATE pending_registrations
+            SET phone_verified = 1,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+            """,
+            (registration_id,)
+        )
+
+        conn.commit()
+        conn.close()
+
+        self.send_json(
+            200,
+            {
+                "success": True,
+                "phone_verified": True,
+                "next_step": "password"
+            }
+        )
+
+
+    def verify_pending_code(
+        self,
+        registration_id,
+        channel,
+        code
+    ):
+
+        code = str(code).strip()
+
+        if not code.isdigit() or len(code) != 6:
+
+            return False, "Invalid verification code."
+
+        code_hash = hashlib.sha256(
+            code.encode("utf-8")
+        ).hexdigest()
+
+        conn = get_db()
+
+        verification = conn.execute(
+            """
+            SELECT
+                id,
+                code_hash,
+                expires_at,
+                attempts,
+                used
+            FROM pending_verification_codes
+            WHERE registration_id = ?
+              AND channel = ?
+              AND used = 0
+            ORDER BY id DESC
+            LIMIT 1
+            """,
+            (
+                registration_id,
+                channel
+            )
+        ).fetchone()
+
+        if not verification:
+
+            conn.close()
+
+            return False, "Verification code not found or already used."
+
+        if verification["attempts"] >= 5:
+
+            conn.execute(
+                """
+                UPDATE pending_verification_codes
+                SET used = 1
+                WHERE id = ?
+                """,
+                (verification["id"],)
+            )
+
+            conn.commit()
+            conn.close()
+
+            return False, "Too many verification attempts."
+
+        try:
+            expires_at = datetime.fromisoformat(
+                verification["expires_at"]
+            )
+
+            if utc_now() > expires_at:
+
+                conn.execute(
+                    """
+                    UPDATE pending_verification_codes
+                    SET used = 1
+                    WHERE id = ?
+                    """,
+                    (verification["id"],)
+                )
+
+                conn.commit()
+                conn.close()
+
+                return False, "Verification code has expired."
+
+        except ValueError:
+
+            conn.close()
+
+            return False, "Invalid verification code."
+
+        new_attempts = verification["attempts"] + 1
+
+        if not secrets.compare_digest(
+            verification["code_hash"],
+            code_hash
+        ):
+
+            conn.execute(
+                """
+                UPDATE pending_verification_codes
+                SET attempts = ?
+                WHERE id = ?
+                """,
+                (
+                    new_attempts,
+                    verification["id"]
+                )
+            )
+
+            if new_attempts >= 5:
+
+                conn.execute(
+                    """
+                    UPDATE pending_verification_codes
+                    SET used = 1
+                    WHERE id = ?
+                    """,
+                    (verification["id"],)
+                )
+
+            conn.commit()
+            conn.close()
+
+            remaining = 5 - new_attempts
+
+            if remaining <= 0:
+                return False, "Too many verification attempts."
+
+            return (
+                False,
+                f"Invalid verification code. "
+                f"{remaining} attempts remaining."
+            )
+
+        conn.execute(
+            """
+            UPDATE pending_verification_codes
+            SET used = 1,
+                attempts = ?
+            WHERE id = ?
+            """,
+            (
+                new_attempts,
+                verification["id"]
+            )
+        )
+
+        conn.commit()
+        conn.close()
+
+        return True, "Verification successful."
+
+
+    def complete_registration(self, data):
+
+        registration_id = data.get("registration_id")
+
+        password = str(
+            data.get("password", "")
+        )
+
+        confirm_password = str(
+            data.get("confirm_password", "")
+        )
+
+        if not registration_id or not password or not confirm_password:
+
+            self.send_json(
+                400,
+                {
+                    "error": (
+                        "Registration ID, password and "
+                        "password confirmation are required."
+                    )
+                }
+            )
+
+            return
+
+        if password != confirm_password:
+
+            self.send_json(
+                400,
+                {
+                    "error": "Passwords do not match."
+                }
+            )
+
+            return
+
+        if len(password) < 8:
+
+            self.send_json(
+                400,
+                {
+                    "error": "Password must be at least 8 characters."
+                }
+            )
+
+            return
+
+        try:
+            registration_id = int(registration_id)
+        except (TypeError, ValueError):
+
+            self.send_json(
+                400,
+                {
+                    "error": "Invalid registration ID."
+                }
+            )
+
+            return
+
+        conn = get_db()
+
+        registration = conn.execute(
+            """
+            SELECT
+                id,
+                full_name,
+                email,
+                phone_number,
+                country,
+                region,
+                city,
+                physical_address,
+                identity_hash,
+                email_verified,
+                phone_verified
+            FROM pending_registrations
+            WHERE id = ?
+            """,
+            (registration_id,)
+        ).fetchone()
+
+        if not registration:
+
+            conn.close()
+
+            self.send_json(
+                404,
+                {
+                    "error": "Registration could not be found."
+                }
+            )
+
+            return
+
+        if not registration["email_verified"]:
+
+            conn.close()
+
+            self.send_json(
+                403,
+                {
+                    "error": "Email verification is required."
+                }
+            )
+
+            return
+
+        if not registration["phone_verified"]:
+
+            conn.close()
+
+            self.send_json(
+                403,
+                {
+                    "error": "Phone verification is required."
+                }
+            )
+
+            return
+
+        existing_email = conn.execute(
+            """
+            SELECT id
+            FROM users
+            WHERE email = ?
+            """,
+            (registration["email"],)
+        ).fetchone()
+
+        if existing_email:
+
+            conn.close()
+
+            self.send_json(
+                409,
+                {
+                    "error": (
+                        "An account with this email already exists."
+                    )
+                }
+            )
+
+            return
+
+        existing_identity = conn.execute(
+            """
+            SELECT id
+            FROM users
+            WHERE identity_hash = ?
+            """,
+            (registration["identity_hash"],)
+        ).fetchone()
+
+        if existing_identity:
+
+            conn.close()
+
+            self.send_json(
+                409,
+                {
+                    "error": (
+                        "An account is already registered "
+                        "with this identity."
+                    )
+                }
+            )
+
+            return
+
+        existing_phone = conn.execute(
+            """
+            SELECT id
+            FROM users
+            WHERE phone_number = ?
+            """,
+            (registration["phone_number"],)
+        ).fetchone()
+
+        if existing_phone:
+
+            conn.close()
+
+            self.send_json(
+                409,
+                {
+                    "error": (
+                        "An account with this phone number "
+                        "already exists."
+                    )
+                }
+            )
+
+            return
+
+        password_hash = hash_password(password)
+
+        try:
+
+            cursor = conn.execute(
+                """
+                INSERT INTO users (
+                    full_name,
+                    email,
+                    password_hash,
+                    role,
+                    email_verified,
+                    phone_number,
+                    phone_verified,
+                    country,
+                    region,
+                    city,
+                    identity_hash,
+                    updated_at
+                )
+                VALUES (?, ?, ?, 'user', 1, ?, 1, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                """,
+                (
+                    registration["full_name"],
+                    registration["email"],
+                    password_hash,
+                    registration["phone_number"],
+                    registration["country"],
+                    registration["region"],
+                    registration["city"],
+                    registration["identity_hash"]
+                )
+            )
+
+            user_id = cursor.lastrowid
+
+            conn.execute(
+                """
+                DELETE FROM pending_verification_codes
+                WHERE registration_id = ?
+                """,
+                (registration_id,)
+            )
+
+            conn.execute(
+                """
+                DELETE FROM pending_registrations
+                WHERE id = ?
+                """,
+                (registration_id,)
+            )
+
+            conn.commit()
+            conn.close()
+
+        except sqlite3.IntegrityError:
+
+            conn.rollback()
+            conn.close()
+
+            self.send_json(
+                409,
+                {
+                    "error": (
+                        "Registration could not be completed. "
+                        "The account information may already exist."
+                    )
+                }
+            )
+
+            return
+
+        self.send_json(
+            201,
+            {
+                "success": True,
+                "message": "Welcome to GODO AI.",
+                "user_id": user_id,
+                "next_step": "welcome"
+            }
+        )
 
 
     def register(self, data):

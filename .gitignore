@@ -11,3 +11,6 @@ backend/server.py.backup-verification
 backend/server.py.backup-resend
 
 backend/database/*.db
+
+backend/server.py.backup-registration-flow
+backend/database/*.backup-registration-flow
