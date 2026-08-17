@@ -7,6 +7,7 @@ import secrets
 from datetime import datetime, timedelta, timezone
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse
+from pathlib import Path
 
 HOST = "0.0.0.0"
 PORT = int(__import__("os").environ.get("PORT", "8000"))
@@ -61,6 +62,11 @@ def send_verification_email(destination, code):
 
 
 def get_db():
+    db_path = Path(DB_PATH)
+
+    if db_path.parent:
+        db_path.parent.mkdir(parents=True, exist_ok=True)
+
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
