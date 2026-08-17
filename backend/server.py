@@ -1,6 +1,8 @@
 import json
 import sqlite3
 import hashlib
+import hmac
+import requests
 import secrets
 from datetime import datetime, timedelta, timezone
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -10,6 +12,52 @@ HOST = "0.0.0.0"
 PORT = int(__import__("os").environ.get("PORT", "8000"))
 
 DB_PATH = __import__("os").environ.get("GODO_AI_DB_PATH", "backend/database/godo_ai.db")
+
+IDENTITY_HASH_SECRET = __import__("os").environ.get("GODO_AI_IDENTITY_SECRET", "")
+
+
+RESEND_API_KEY = __import__("os").environ.get("RESEND_API_KEY", "")
+RESEND_FROM_EMAIL = __import__("os").environ.get(
+    "RESEND_FROM_EMAIL",
+    "onboarding@resend.dev"
+)
+
+
+def send_verification_email(destination, code):
+    if not RESEND_API_KEY:
+        raise RuntimeError(
+            "RESEND_API_KEY is not configured."
+        )
+
+    response = requests.post(
+        "https://api.resend.com/emails",
+        headers={
+            "Authorization": f"Bearer {RESEND_API_KEY}",
+            "Content-Type": "application/json"
+        },
+        json={
+            "from": RESEND_FROM_EMAIL,
+            "to": [destination],
+            "subject": "GODO AI Email Verification",
+            "html": f"""
+                <h2>GODO AI Email Verification</h2>
+                <p>Your verification code is:</p>
+                <h1>{code}</h1>
+                <p>This code expires in 15 minutes.</p>
+                <p>If you did not create this account, you can ignore this email.</p>
+            """
+        },
+        timeout=15
+    )
+
+    if not response.ok:
+        raise RuntimeError(
+            f"Resend email failed: HTTP {response.status_code}"
+        )
+
+    return True
+
+
 
 
 def get_db():
@@ -44,6 +92,26 @@ def init_db():
 
     conn.commit()
     conn.close()
+
+
+def hash_identity(identity_number):
+    normalized = "".join(
+        str(identity_number).strip().upper().split()
+    )
+
+    if not normalized:
+        return None
+
+    if not IDENTITY_HASH_SECRET:
+        raise RuntimeError(
+            "GODO_AI_IDENTITY_SECRET is not configured."
+        )
+
+    return hmac.new(
+        IDENTITY_HASH_SECRET.encode("utf-8"),
+        normalized.encode("utf-8"),
+        hashlib.sha256
+    ).hexdigest()
 
 
 def hash_password(password):
@@ -685,6 +753,235 @@ class AuthHandler(BaseHTTPRequestHandler):
         )
 
 
+    def create_verification_code(
+        self,
+        user_id,
+        purpose,
+        channel,
+        destination
+    ):
+        """
+        Create a secure one-time verification code.
+
+        The raw OTP is never stored in the database.
+        Only its SHA-256 hash is stored.
+        """
+
+        code = f"{secrets.randbelow(1000000):06d}"
+
+        code_hash = hashlib.sha256(
+            code.encode("utf-8")
+        ).hexdigest()
+
+        expires_at = (
+            utc_now() + timedelta(minutes=15)
+        ).isoformat()
+
+        conn = get_db()
+
+        # Invalidate previous unused codes
+        # for the same verification purpose/channel.
+        conn.execute(
+            """
+            UPDATE verification_codes
+            SET used = 1
+            WHERE user_id = ?
+              AND purpose = ?
+              AND channel = ?
+              AND used = 0
+            """,
+            (
+                user_id,
+                purpose,
+                channel
+            )
+        )
+
+        conn.execute(
+            """
+            INSERT INTO verification_codes (
+                user_id,
+                purpose,
+                channel,
+                destination,
+                code_hash,
+                expires_at,
+                attempts,
+                used
+            )
+            VALUES (?, ?, ?, ?, ?, ?, 0, 0)
+            """,
+            (
+                user_id,
+                purpose,
+                channel,
+                destination,
+                code_hash,
+                expires_at
+            )
+        )
+
+        conn.commit()
+        conn.close()
+
+        return code
+
+
+    def verify_code(
+        self,
+        user_id,
+        purpose,
+        channel,
+        code
+    ):
+        """
+        Verify a one-time code.
+
+        Rules:
+        - 6 digits
+        - maximum 5 attempts
+        - 15 minute expiry
+        - one-time use
+        """
+
+        code = str(code).strip()
+
+        if not code.isdigit() or len(code) != 6:
+
+            return False, "Invalid verification code."
+
+        code_hash = hashlib.sha256(
+            code.encode("utf-8")
+        ).hexdigest()
+
+        conn = get_db()
+
+        verification = conn.execute(
+            """
+            SELECT
+                id,
+                code_hash,
+                expires_at,
+                attempts,
+                used
+            FROM verification_codes
+            WHERE user_id = ?
+              AND purpose = ?
+              AND channel = ?
+              AND used = 0
+            ORDER BY id DESC
+            LIMIT 1
+            """,
+            (
+                user_id,
+                purpose,
+                channel
+            )
+        ).fetchone()
+
+        if not verification:
+
+            conn.close()
+
+            return False, "Verification code not found or already used."
+
+        if verification["attempts"] >= 5:
+
+            conn.execute(
+                """
+                UPDATE verification_codes
+                SET used = 1
+                WHERE id = ?
+                """,
+                (verification["id"],)
+            )
+
+            conn.commit()
+            conn.close()
+
+            return False, "Too many verification attempts."
+
+        try:
+
+            expires_at = datetime.fromisoformat(
+                verification["expires_at"]
+            )
+
+        except ValueError:
+
+            conn.close()
+
+            return False, "Invalid verification code."
+
+        if utc_now() >= expires_at:
+
+            conn.execute(
+                """
+                UPDATE verification_codes
+                SET used = 1
+                WHERE id = ?
+                """,
+                (verification["id"],)
+            )
+
+            conn.commit()
+            conn.close()
+
+            return False, "Verification code has expired."
+
+        new_attempts = verification["attempts"] + 1
+
+        if not secrets.compare_digest(
+            code_hash,
+            verification["code_hash"]
+        ):
+
+            conn.execute(
+                """
+                UPDATE verification_codes
+                SET attempts = ?
+                WHERE id = ?
+                """,
+                (
+                    new_attempts,
+                    verification["id"]
+                )
+            )
+
+            conn.commit()
+            conn.close()
+
+            remaining = 5 - new_attempts
+
+            if remaining <= 0:
+
+                return False, "Too many verification attempts."
+
+            return (
+                False,
+                f"Invalid verification code. "
+                f"{remaining} attempts remaining."
+            )
+
+        conn.execute(
+            """
+            UPDATE verification_codes
+            SET used = 1,
+                attempts = ?
+            WHERE id = ?
+            """,
+            (
+                new_attempts,
+                verification["id"]
+            )
+        )
+
+        conn.commit()
+        conn.close()
+
+        return True, "Verification successful."
+
+
     def register(self, data):
 
         full_name = str(
@@ -695,17 +992,46 @@ class AuthHandler(BaseHTTPRequestHandler):
             data.get("email", "")
         ).strip().lower()
 
+        phone_number = str(
+            data.get("phone_number", "")
+        ).strip()
+
+        country = str(
+            data.get("country", "")
+        ).strip()
+
+        region = str(
+            data.get("region", "")
+        ).strip()
+
+        city = str(
+            data.get("city", "")
+        ).strip()
+
+        identity_number = str(
+            data.get("identity_number", "")
+        ).strip()
+
         password = str(
             data.get("password", "")
         )
 
 
-        if not full_name or not email or not password:
+        if not all([
+            full_name,
+            email,
+            phone_number,
+            country,
+            region,
+            city,
+            identity_number,
+            password
+        ]):
 
             self.send_json(
                 400,
                 {
-                    "error": "All fields are required."
+                    "error": "All registration fields are required."
                 }
             )
 
@@ -724,48 +1050,42 @@ class AuthHandler(BaseHTTPRequestHandler):
             return
 
 
-        password_hash = hash_password(
-            password
-        )
-
-
         try:
 
-            conn = get_db()
-
-            conn.execute(
-                """
-                INSERT INTO users
-                (full_name, email, password_hash)
-                VALUES (?, ?, ?)
-                """,
-                (
-                    full_name,
-                    email,
-                    password_hash
-                )
+            identity_hash = hash_identity(
+                identity_number
             )
 
-            conn.commit()
+        except RuntimeError as error:
 
-            user_id = conn.execute(
-                "SELECT last_insert_rowid()"
-            ).fetchone()[0]
-
-            conn.close()
-
+            print("Registration security error:", error)
 
             self.send_json(
-                201,
+                500,
                 {
-                    "success": True,
-                    "message": "GODO AI account created.",
-                    "user_id": user_id
+                    "error": "Registration security is not configured."
                 }
             )
 
+            return
 
-        except sqlite3.IntegrityError:
+
+        conn = get_db()
+
+
+        existing_email = conn.execute(
+            """
+            SELECT id
+            FROM users
+            WHERE email = ?
+            """,
+            (email,)
+        ).fetchone()
+
+
+        if existing_email:
+
+            conn.close()
 
             self.send_json(
                 409,
@@ -773,6 +1093,195 @@ class AuthHandler(BaseHTTPRequestHandler):
                     "error": "An account with this email already exists."
                 }
             )
+
+            return
+
+
+        existing_identity = conn.execute(
+            """
+            SELECT id
+            FROM users
+            WHERE identity_hash = ?
+            """,
+            (identity_hash,)
+        ).fetchone()
+
+
+        if existing_identity:
+
+            conn.close()
+
+            self.send_json(
+                409,
+                {
+                    "error": (
+                        "An account is already registered "
+                        "with this identity."
+                    )
+                }
+            )
+
+            return
+
+
+        existing_phone = conn.execute(
+            """
+            SELECT id
+            FROM users
+            WHERE phone_number = ?
+            """,
+            (phone_number,)
+        ).fetchone()
+
+
+        if existing_phone:
+
+            conn.close()
+
+            self.send_json(
+                409,
+                {
+                    "error": (
+                        "An account with this phone number "
+                        "already exists."
+                    )
+                }
+            )
+
+            return
+
+
+        password_hash = hash_password(
+            password
+        )
+
+
+        try:
+
+            cursor = conn.execute(
+                """
+                INSERT INTO users (
+                    full_name,
+                    email,
+                    password_hash,
+                    role,
+                    email_verified,
+                    phone_number,
+                    phone_verified,
+                    country,
+                    region,
+                    city,
+                    identity_hash,
+                    updated_at
+                )
+                VALUES (?, ?, ?, 'user', 0, ?, 0, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                """,
+                (
+                    full_name,
+                    email,
+                    password_hash,
+                    phone_number,
+                    country,
+                    region,
+                    city,
+                    identity_hash
+                )
+            )
+
+            conn.commit()
+
+            user_id = cursor.lastrowid
+
+            conn.close()
+
+
+        except sqlite3.IntegrityError:
+
+            conn.close()
+
+            self.send_json(
+                409,
+                {
+                    "error": (
+                        "Registration could not be completed. "
+                        "The account information may already exist."
+                    )
+                }
+            )
+
+            return
+
+
+        # Create one-time verification codes.
+        # Only hashed codes are stored in the database.
+        email_otp = self.create_verification_code(
+            user_id,
+            "registration",
+            "email",
+            email
+        )
+
+        phone_otp = self.create_verification_code(
+            user_id,
+            "registration",
+            "phone",
+            phone_number
+        )
+
+
+        # Send the email verification code.
+        # The raw OTP is sent only to the user's email.
+        # Only its hash is stored in the database.
+        try:
+
+            send_verification_email(
+                email,
+                email_otp
+            )
+
+        except Exception as error:
+
+            print(
+                "Email verification delivery error:",
+                error
+            )
+
+            self.send_json(
+                503,
+                {
+                    "success": False,
+                    "error": (
+                        "Account created, but the verification "
+                        "email could not be sent. Please try again."
+                    )
+                }
+            )
+
+            return
+
+
+        # Development-only logging.
+        # Never expose these codes through the production API response.
+        print(
+            f"🔐 Registration verification generated for user {user_id}"
+        )
+
+
+        self.send_json(
+            201,
+            {
+                "success": True,
+                "message": (
+                    "GODO AI account created. "
+                    "Email and phone verification required."
+                ),
+                "user_id": user_id,
+                "verification": {
+                    "email_verified": False,
+                    "phone_verified": False
+                }
+            }
+        )
 
 
     def login(self, data):

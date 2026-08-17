@@ -1,0 +1,13 @@
+
+backend/database/*.backup-auth
+backend/server.py.backup-auth
+backend/__pycache__/
+
+backend/database/*.backup-verification
+backend/server.py.backup-verification
+
+.identity-secret
+
+backend/server.py.backup-resend
+
+backend/database/*.db
