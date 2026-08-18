@@ -133,6 +133,74 @@ def init_db():
         )
     """)
 
+    # ---------------------------------------------------------
+    # Database migrations for existing installations.
+    # CREATE TABLE IF NOT EXISTS does not modify an existing
+    # table, so older databases need missing columns added.
+    # ---------------------------------------------------------
+
+    def add_column_if_missing(table, column, definition):
+        columns = {
+            row["name"]
+            for row in conn.execute(
+                f"PRAGMA table_info({table})"
+            ).fetchall()
+        }
+
+        if column not in columns:
+            conn.execute(
+                f"ALTER TABLE {table} ADD COLUMN {column} {definition}"
+            )
+
+    # Existing users table migration.
+    add_column_if_missing(
+        "users",
+        "email_verified",
+        "INTEGER NOT NULL DEFAULT 0"
+    )
+
+    add_column_if_missing(
+        "users",
+        "phone_number",
+        "TEXT"
+    )
+
+    add_column_if_missing(
+        "users",
+        "phone_verified",
+        "INTEGER NOT NULL DEFAULT 0"
+    )
+
+    add_column_if_missing(
+        "users",
+        "country",
+        "TEXT"
+    )
+
+    add_column_if_missing(
+        "users",
+        "region",
+        "TEXT"
+    )
+
+    add_column_if_missing(
+        "users",
+        "city",
+        "TEXT"
+    )
+
+    add_column_if_missing(
+        "users",
+        "identity_hash",
+        "TEXT"
+    )
+
+    add_column_if_missing(
+        "users",
+        "updated_at",
+        "TEXT"
+    )
+
     conn.commit()
     conn.close()
 
