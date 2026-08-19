@@ -1392,7 +1392,7 @@ class AuthHandler(BaseHTTPRequestHandler):
                     physical_address,
                     identity_hash
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     f"{full_name} {surname}",
