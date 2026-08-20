@@ -52,8 +52,21 @@ def send_verification_email(destination, code):
     )
 
     if not response.ok:
+        try:
+            error_body = response.json()
+        except Exception:
+            error_body = response.text
+
+        print(
+            "❌ RESEND ERROR:",
+            response.status_code,
+            error_body,
+            flush=True
+        )
+
         raise RuntimeError(
-            f"Resend email failed: HTTP {response.status_code}"
+            f"Resend email failed: HTTP {response.status_code}: "
+            f"{error_body}"
         )
 
     return True
