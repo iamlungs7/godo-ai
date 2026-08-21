@@ -1205,6 +1205,8 @@ class AuthHandler(BaseHTTPRequestHandler):
 
     def register_start(self, data):
 
+        print("🔥 REGISTER_START HIT", flush=True)
+
         full_name = str(
             data.get("full_name", "")
         ).strip()
