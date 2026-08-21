@@ -1443,16 +1443,29 @@ class AuthHandler(BaseHTTPRequestHandler):
 
         try:
 
+            print(
+                "🔥 EMAIL_SEND_START:",
+                email,
+                flush=True
+            )
+
             send_verification_email(
                 email,
                 email_otp
             )
 
+            print(
+                "✅ EMAIL_SEND_SUCCESS:",
+                email,
+                flush=True
+            )
+
         except Exception as error:
 
             print(
-                "Pending email verification delivery error:",
-                error
+                "❌ EMAIL_SEND_ERROR:",
+                repr(error),
+                flush=True
             )
 
             self.send_json(
